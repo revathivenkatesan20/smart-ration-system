@@ -1,0 +1,31 @@
+# IDE and System files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Dependency and output folders (general)
+node_modules/
+build/
+target/
+out/
+dist/
+bin/
+
+# Environment and secrets
+.env
+.env.local
+.env.production
+.env.development.local
+.env.test.local
+.env.production.local
+*.jks
+*.keystore
+firebase-service-account.json
+google-services.json
+
+# Local logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
