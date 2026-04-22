@@ -17,20 +17,30 @@ from datetime import datetime, timedelta
 import json
 import random
 import warnings
+import os
 import mysql.connector
 from mysql.connector import Error
 warnings.filterwarnings('ignore')
 
-DB_CONFIG = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': 'Revathi@04',
-    'database': 'smart_ration_db'
-}
-
+# Database Configuration (All via environment variables - set these on Render)
 def get_db_connection():
     try:
-        conn = mysql.connector.connect(**DB_CONFIG)
+        # We use the same environment variable names as the Spring Boot backend for consistency
+        # Extract connection details from SPRING_DATASOURCE_URL or discrete variables
+        db_host = os.getenv('DB_HOST', 'localhost')
+        db_user = os.getenv('DB_USER', 'root')
+        db_password = os.getenv('DB_PASSWORD', 'Revathi@04')
+        db_name = os.getenv('DB_NAME', 'smart_ration_db')
+        db_port = os.getenv('DB_PORT', '3306')
+
+        conn = mysql.connector.connect(
+            host=db_host,
+            user=db_user,
+            password=db_password,
+            database=db_name,
+            port=db_port,
+            ssl_disabled=False # Aiven requires SSL
+        )
         return conn
     except Error as e:
         print(f"Error connecting to MySQL: {e}")
