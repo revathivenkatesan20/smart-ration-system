@@ -1,6 +1,6 @@
 export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
 
-export const MAPPLS_API_KEY = 'vuuitbpnpatsbqofzadioveardrmblbqdkaw';
+export const MAPPLS_API_KEY = process.env.REACT_APP_MAPPLS_API_KEY || 'vuuitbpnpatsbqofzadioveardrmblbqdkaw';
 
 export const MOCK = {
   user: {
