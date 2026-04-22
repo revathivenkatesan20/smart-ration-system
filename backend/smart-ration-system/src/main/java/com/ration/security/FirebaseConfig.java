@@ -15,10 +15,24 @@ public class FirebaseConfig {
     @PostConstruct
     public void initialize() {
         try {
-            FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(
-                    new ClassPathResource("firebase-service-account.json").getInputStream()))
-                .build();
+            String firebaseConfig = System.getenv("FIREBASE_SERVICE_ACCOUNT");
+            FirebaseOptions options;
+
+            if (firebaseConfig != null && !firebaseConfig.isEmpty()) {
+                // Read from Environment Variable (Render/Production)
+                options = FirebaseOptions.builder()
+                    .setCredentials(GoogleCredentials.fromStream(
+                        new java.io.ByteArrayInputStream(firebaseConfig.getBytes())))
+                    .build();
+                System.out.println("✅ Firebase initialized using Environment Variable");
+            } else {
+                // Fallback to Classpath file (Local Development)
+                options = FirebaseOptions.builder()
+                    .setCredentials(GoogleCredentials.fromStream(
+                        new ClassPathResource("firebase-service-account.json").getInputStream()))
+                    .build();
+                System.out.println("✅ Firebase initialized using local JSON file");
+            }
 
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
