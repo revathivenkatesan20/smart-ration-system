@@ -108,7 +108,7 @@ const AppContent = () => {
     toasts, addToast, 
     smsMessages, triggerSms,
     notifs, setNotifs, markNotifRead,
-    mapplsLoaded, setMapplsLoaded,
+    setMapplsLoaded,
     page, setPage,
     adminEditContext, setAdminEditContext
   } = useApp();

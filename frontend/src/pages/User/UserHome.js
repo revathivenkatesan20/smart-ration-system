@@ -216,7 +216,6 @@ const UserHome = () => {
       // Default Rice Card
       return `Priority Card: ${Math.max(12, Math.min(20, units * 5))}kg Rice (Free), ${Math.min(2, units * 0.5)}kg Sugar (₹13.50), 1L Oil, 1kg Dal, and Wheat.`;
     }
-    return t('cardDetails');
   };
 
   const getDetailedShopStatus = () => {

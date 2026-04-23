@@ -150,7 +150,6 @@ export const T = {
     collected: "Collected",
     cancelled: "Cancelled",
     offline: "Cash",
-    online: "Online (UPI / Card)",
     totalTokens: "Total Tokens",
     tokenNumber: "Token No.",
     slot: "Slot",
