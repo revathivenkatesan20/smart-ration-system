@@ -55,13 +55,12 @@ const SearchableShopDropdown = ({ shops, selectedId, onSelect, lang, t }) => {
           value={isOpen ? search : (selectedShop?.name || '')}
           onChange={(e) => { setSearch(e.target.value); setIsOpen(true); }}
           onFocus={() => setIsOpen(true)}
-          style={{ width: '100%', boxSizing: 'border-box', textOverflow: 'ellipsis' }}
+          style={{ width: '100%', boxSizing: 'border-box', textOverflow: 'ellipsis', paddingRight: 40, cursor: 'pointer' }}
         />
-        {selectedShop && !isOpen && (
-          <div style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)' }}>
-             <span className="tag tag-green">✅</span>
-          </div>
-        )}
+        <div style={{ position:'absolute', right:12, top:'50%', transform:'translateY(-50%)', pointerEvents:'none', display: 'flex', gap: 6, alignItems: 'center' }}>
+           {selectedShop && !isOpen && <span className="tag tag-green" style={{ padding: '2px 4px', fontSize: 10 }}>✅</span>}
+           <span style={{ fontSize: 10, color: 'var(--gray-400)' }}>{isOpen ? '▲' : '▼'}</span>
+        </div>
       </div>
 
       {isOpen && (
