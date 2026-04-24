@@ -31,6 +31,13 @@ const LoginPage = () => {
     return () => clearInterval(timer);
   }, [cooldown]);
 
+  // --- AUTO-WAKEUP OPTIMIZATION ---
+  // Since Render Free Tier "sleeps" after 15 mins, we send a tiny 
+  // background request as soon as the user lands on the login page.
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/api/public/shops`).catch(() => {});
+  }, []);
+
   if (showRegister) {
     return (
       <RegisterPage
