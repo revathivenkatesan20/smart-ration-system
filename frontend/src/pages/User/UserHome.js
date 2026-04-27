@@ -6,15 +6,22 @@ import { API_BASE_URL, MOCK } from '../../utils/constants';
 import { statusBadge, safeInitMap } from '../../utils/logic';
 
 const UserHome = () => {
-  const { user, lang, setPage, mapplsLoaded } = useApp();
+  const { 
+    user, lang, setPage, mapplsLoaded,
+    cachedProfile, setCachedProfile,
+    cachedStock, setCachedStock,
+    cachedShops, setCachedShops
+  } = useApp();
   const t = (k) => T[lang][k]||k;
 
-  const [profile, setProfile] = useState(null);
-  const [shopStock, setShopStock] = useState([]);
-  const [loadingProfile, setLoadingProfile] = useState(true);
-  const [loadingStock, setLoadingStock] = useState(true);
+  const [profile, setProfile] = useState(cachedProfile);
+  const [shopStock, setShopStock] = useState(cachedStock);
+  const [allShops, setAllShops] = useState(cachedShops);
+  
+  const [loadingProfile, setLoadingProfile] = useState(!cachedProfile);
+  const [loadingStock, setLoadingStock] = useState(!cachedStock.length);
+  
   const [showMapModal, setShowMapModal] = useState(false);
-  const [allShops, setAllShops] = useState([]);
   const [selectedShop, setSelectedShop] = useState(null);
   const mapInstanceRef = React.useRef(null);
 
@@ -22,65 +29,53 @@ const UserHome = () => {
     const authToken = localStorage.getItem('token');
     if (!authToken) { setLoadingProfile(false); setLoadingStock(false); return; }
 
-    fetch(`${API_BASE_URL}/api/user/profile`, {
+    // Optimization: Parallel fetches for everything
+    const fetchProfile = fetch(`${API_BASE_URL}/api/user/profile`, {
       headers: { Authorization: `Bearer ${authToken}` }
-    })
-    .then(res => {
-      if (res.status === 401) {
-        localStorage.clear();
-        window.location.href = '/';
-        throw new Error('Unauthorized');
-      }
-      return res.json();
-    })
-    .then(data => {
-      if (data.success && data.data) {
-        const p = data.data;
+    }).then(r => r.status === 401 ? (localStorage.clear(), window.location.href='/', null) : r.json());
+
+    const fetchShops = fetch(`${API_BASE_URL}/api/public/shops`).then(r => r.json());
+
+    Promise.all([fetchProfile, fetchShops]).then(([profileRes, shopsRes]) => {
+      if (profileRes?.success && profileRes?.data) {
+        const p = profileRes.data;
         setProfile(p);
-        localStorage.setItem('rationCardNumber', p.rationCardNumber||'');
-        localStorage.setItem('userName', p.name||p.headOfFamily||'');
-        localStorage.setItem('shopId', String(p.shopId||4));
-        localStorage.setItem('shopName', p.shopName||'');
-        return p.shopId || 4;
+        setCachedProfile(p);
+        setLoadingProfile(false);
+        
+        // Parallel stock fetch once we have profile
+        const shopId = p.shopId || 4;
+        fetch(`${API_BASE_URL}/api/stock/shop/${shopId}`)
+          .then(r => r.json())
+          .then(stockData => {
+            if (stockData?.success && stockData?.data) {
+              const mapped = stockData.data.map(s => ({
+                id:s.itemId, nameEn:s.nameEn||'Unknown', nameTa:s.nameTa||'',
+                category:s.category||'Other', unit:s.unit||'kg',
+                price:parseFloat(s.subsidyPrice)||0,
+                available:parseFloat(s.quantityAvailable)||0,
+                limit:parseFloat(s.monthlyEntitlement)||1,
+                status:s.status||'Available',
+                icon:s.category==='Grain'?'🌾':s.category==='Oil'?'🫙':
+                  s.category==='Sugar'?'🍬':s.category==='Pulse'?'🫘':
+                  s.category==='Kerosene'?'🛢️':'📦'
+              }));
+              setShopStock(mapped);
+              setCachedStock(mapped);
+            }
+            setLoadingStock(false);
+          });
       }
-      return parseInt(localStorage.getItem('shopId')||'4');
-    })
-    .then(shopId => {
+      
+      if (shopsRes?.success) {
+        setAllShops(shopsRes.data);
+        setCachedShops(shopsRes.data);
+      }
+    }).catch(err => {
+      console.error("Home Refresh Error:", err);
       setLoadingProfile(false);
-      return fetch(`${API_BASE_URL}/api/stock/shop/${shopId}`);
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data && data.success && data.data && data.data.length > 0) {
-        const mapped = data.data.map(s => ({
-          id:s.itemId, nameEn:s.nameEn||'Unknown', nameTa:s.nameTa||'',
-          category:s.category||'Other', unit:s.unit||'kg',
-          price:parseFloat(s.subsidyPrice)||0,
-          available:parseFloat(s.quantityAvailable)||0,
-          limit:parseFloat(s.monthlyEntitlement)||1,
-          status:s.status||'Available',
-          icon:s.category==='Grain'?'🌾':s.category==='Oil'?'🫙':
-            s.category==='Sugar'?'🍬':s.category==='Pulse'?'🫘':
-            s.category==='Kerosene'?'🛢️':'📦'
-        }));
-        setShopStock(mapped);
-      }
-    })
-    .catch(err => { if (err.message !== 'Unauthorized') console.log('Error:', err); })
-    .finally(() => {
       setLoadingStock(false);
-      setLoadingProfile(false);
     });
-
-
-    // Fetch All Shops for Map
-    fetch(`${API_BASE_URL}/api/public/shops`)
-    .then(res => {
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-      return res.json();
-    })
-    .then(data => { if (data.success) setAllShops(data.data); })
-    .catch(e => console.error('Shops fetch error:', e));
   }, []);
 
   useEffect(() => {

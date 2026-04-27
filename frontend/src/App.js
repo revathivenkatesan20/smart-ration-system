@@ -231,15 +231,14 @@ const AppContent = () => {
         />
       )}
 
-      <React.Suspense fallback={
-        <div style={{ height: '100vh', width: '100vw', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc' }}>
-          <div className="spinner"></div>
-        </div>
-      }>
         {(!authData && page !== 'register') ? (
-           <LoginPage setPage={setPage} />
+           <React.Suspense fallback={<div className="flex-center" style={{height:'100vh'}}><div className="spinner" /></div>}>
+             <LoginPage setPage={setPage} />
+           </React.Suspense>
         ) : (page === 'register') ? (
-           <RegisterPage onBack={() => setPage('login')} onSuccess={(data) => login(data)} />
+           <React.Suspense fallback={<div className="flex-center" style={{height:'100vh'}}><div className="spinner" /></div>}>
+             <RegisterPage onBack={() => setPage('login')} onSuccess={(data) => login(data)} />
+           </React.Suspense>
         ) : (
           <div className="app-shell" onClick={(e) => {
             if (window.innerWidth <= 768) {
@@ -261,7 +260,13 @@ const AppContent = () => {
                   sidebar?.classList.toggle('open');
                 }}
               />
-              {renderDashboard()}
+              <React.Suspense fallback={
+                <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div className="spinner"></div>
+                </div>
+              }>
+                {renderDashboard()}
+              </React.Suspense>
             </div>
             <NotificationDrawer 
               visible={drawerVisible} 
@@ -274,7 +279,6 @@ const AppContent = () => {
             )}
           </div>
         )}
-      </React.Suspense>
     </>
   );
 };

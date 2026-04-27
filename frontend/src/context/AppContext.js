@@ -23,6 +23,11 @@ export const AppProvider = ({ children }) => {
   const [smsMessages, setSmsMessages] = useState([]);
   const [mapplsLoaded, setMapplsLoaded] = useState(false);
   const [adminEditContext, setAdminEditContext] = useState(null);
+  
+  // --- CACHE FOR PERFORMANCE ---
+  const [cachedProfile, setCachedProfile] = useState(null);
+  const [cachedStock, setCachedStock] = useState([]);
+  const [cachedShops, setCachedShops] = useState([]);
 
   const addToast = (title, msg, type = 'info') => {
     const id = Date.now();
@@ -104,7 +109,10 @@ export const AppProvider = ({ children }) => {
     toasts, addToast,
     smsMessages, triggerSms,
     mapplsLoaded, setMapplsLoaded,
-    adminEditContext, setAdminEditContext
+    adminEditContext, setAdminEditContext,
+    cachedProfile, setCachedProfile,
+    cachedStock, setCachedStock,
+    cachedShops, setCachedShops
   };
 
   return <AppCtx.Provider value={value}>{children}</AppCtx.Provider>;
