@@ -25,7 +25,14 @@ const UserHome = () => {
     fetch(`${API_BASE_URL}/api/user/profile`, {
       headers: { Authorization: `Bearer ${authToken}` }
     })
-    .then(res => res.json())
+    .then(res => {
+      if (res.status === 401) {
+        localStorage.clear();
+        window.location.href = '/';
+        throw new Error('Unauthorized');
+      }
+      return res.json();
+    })
     .then(data => {
       if (data.success && data.data) {
         const p = data.data;
@@ -59,11 +66,12 @@ const UserHome = () => {
         setShopStock(mapped);
       }
     })
-    .catch(err => console.log('Error:', err))
+    .catch(err => { if (err.message !== 'Unauthorized') console.log('Error:', err); })
     .finally(() => {
       setLoadingStock(false);
       setLoadingProfile(false);
     });
+
 
     // Fetch All Shops for Map
     fetch(`${API_BASE_URL}/api/public/shops`)
@@ -222,11 +230,11 @@ const UserHome = () => {
     if (!profile) return { status: 'loading', label: 'Checking...', color: 'var(--gray-400)' };
     
     // 1. Manual Toggle Override (Master Multi-state)
-    // If Admin says explicitly CLOSED
-    if (profile.isOpen === false) {
+    // If Admin says explicitly CLOSED with a specific reason
+    if (profile.isOpen === false && profile.closureReason && profile.closureReason.trim() !== "") {
       return { 
         status: 'CLOSED', 
-        label: lang==='ta' ? `மூடியுள்ளது (${profile.closureReason || 'நிர்வாகம்'})` : `CLOSED: ${profile.closureReason || 'Admin Override'}`, 
+        label: lang==='ta' ? `மூடியுள்ளது (${profile.closureReason})` : `CLOSED: ${profile.closureReason}`, 
         color: 'var(--red)',
         icon: '🚫'
       };

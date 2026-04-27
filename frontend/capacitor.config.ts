@@ -3,11 +3,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   appId: 'com.smartration.system',
   appName: 'Smart Ration',
-  webDir: 'build',
-  server: {
-    url: 'https://smart-ration-frontend.vercel.app',
-    cleartext: true
-  }
+  webDir: 'build'
 };
 
 export default config;

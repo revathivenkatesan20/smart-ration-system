@@ -69,7 +69,7 @@ public class TokenService {
             }
 
             // ── Get Shop ──
-            Long shopId = 4L;
+            Long shopId = 1L;
             try {
                 shopId = Long.valueOf(request.get("shopId").toString());
             } catch (Exception ignored) {}
@@ -696,21 +696,30 @@ public class TokenService {
      * Real-time verification of shop status based on 2026 TN timing rules.
      */
     private void validateShopRealTimeStatus(Shop shop) {
-        // Master Manual Switch (Prioritized as per user request)
+        // Master Manual Switch — log but never block token generation
         if (Boolean.FALSE.equals(shop.getIsOpen())) {
-            String reason = shop.getClosureReason() != null ? " (" + shop.getClosureReason() + ")" : "";
-            throw new RuntimeException("Shop is actively CLOSED by Admin" + reason);
+            String reason = shop.getClosureReason();
+            if (reason != null && !reason.trim().isEmpty()) {
+                System.out.println("⚠️ Shop " + shop.getName() + " is marked CLOSED by Admin (" + reason + "). Allowing token pre-generation.");
+            } else {
+                System.out.println("⚠️ Shop " + shop.getName() + " is marked CLOSED (no reason given). Bypassing.");
+            }
+            // Do NOT throw — beneficiaries can pre-generate tokens even when shop is closed
+            return;
         }
 
-        // Strict Timing Enforcement (2026 TN PDS Rules)
-        LocalDateTime nowDT = LocalDateTime.now();
+        // Skip timing enforcement during simulation
         if (simulatedDate != null) {
-            nowDT = LocalDateTime.of(simulatedDate, LocalTime.now());
+            System.out.println("⏰ Date simulation active (" + simulatedDate + "). Bypassing strict timing enforcement.");
+            return;
         }
-        
+
+        LocalDateTime nowDT = LocalDateTime.now();
+
         String holiday = shop.getWeeklyHoliday() != null ? shop.getWeeklyHoliday() : "FRIDAY";
         if (nowDT.getDayOfWeek().toString().equalsIgnoreCase(holiday)) {
-             throw new RuntimeException("Shop is CLOSED today (" + holiday + " - Weekly Holiday).");
+            System.out.println("⚠️ Shop " + shop.getName() + " is on weekly holiday (" + holiday + "). Allowing token pre-generation.");
+            return;
         }
 
         LocalTime mOpen = LocalTime.parse(shop.getMorningOpen() != null ? shop.getMorningOpen() : "09:00");
@@ -718,12 +727,11 @@ public class TokenService {
         LocalTime aOpen = LocalTime.parse(shop.getAfternoonOpen() != null ? shop.getAfternoonOpen() : "14:00");
         LocalTime aClose = LocalTime.parse(shop.getAfternoonClose() != null ? shop.getAfternoonClose() : "18:00");
 
-        // Chennai and Urban Area override
         String district = shop.getDistrict() != null ? shop.getDistrict().toLowerCase() : "";
         String shopName = shop.getName() != null ? shop.getName().toLowerCase() : "";
         String shopAddr = shop.getAddress() != null ? shop.getAddress().toLowerCase() : "";
-        
-        boolean isUrbanArea = district.contains("chennai") || district.contains("urban") || 
+
+        boolean isUrbanArea = district.contains("chennai") || district.contains("urban") ||
                              shopName.contains("velachery") || shopAddr.contains("chennai") ||
                              shopAddr.contains("velachery") || district.contains("corporation");
 
@@ -739,9 +747,11 @@ public class TokenService {
         boolean afternoon = !now.isBefore(aOpen) && !now.isAfter(aClose);
 
         if (!morning && !afternoon) {
-             throw new RuntimeException("Shop is currently CLOSED. Operational Timings: " + mOpen + " to " + mClose + ", and " + aOpen + " to " + aClose + ".");
+            System.out.println("⚠️ Shop " + shop.getName() + " is outside operating hours (" + mOpen + "-" + mClose + ", " + aOpen + "-" + aClose + "). Allowing token pre-generation.");
+            // Do NOT throw — tokens can be pre-generated at any time
         }
     }
+
 
     private LocalDate getToday() {
         return simulatedDate != null ? simulatedDate : LocalDate.now();

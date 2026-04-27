@@ -11,7 +11,9 @@ const isRiceItem = (item) => item?.nameEn?.toLowerCase()?.includes('rice');
 
 // Real-Time Schedule Rule Extractor
 const checkShopTimings = (shop) => {
-  if (shop.isOpen === false) return { isOpen: false, msg: shop.closureReason || 'Closed by Admin' };
+  if (shop.isOpen === false && shop.closureReason && shop.closureReason.trim() !== "") {
+    return { isOpen: false, msg: shop.closureReason };
+  }
   const rightNow = new Date();
   const dayIdx = rightNow.getDay();
   const timeVal = rightNow.getHours() + rightNow.getMinutes() / 60.0;
@@ -192,6 +194,11 @@ const GenerateTokenPage = () => {
 
       try {
         const profRes = await fetch(`${API_BASE_URL}/api/user/profile`, { headers: { Authorization: `Bearer ${token}` } });
+        if (profRes.status === 401) {
+          localStorage.clear();
+          window.location.href = '/';
+          return;
+        }
         const prof = await profRes.json();
         
           if (prof.success) {
