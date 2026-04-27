@@ -39,14 +39,14 @@ const ShopAdminAI = React.lazy(() => import('./pages/ShopAdmin/ShopAdminAI'));
 const ShopAdminProfile = React.lazy(() => import('./pages/ShopAdmin/ShopAdminProfile'));
 const ShopAdminProcurementPage = React.lazy(() => import('./pages/ShopAdmin/ShopAdminProcurementPage'));
 
-// User
-const UserHome = React.lazy(() => import('./pages/User/UserHome'));
-const MyTokensPage = React.lazy(() => import('./pages/User/MyTokensPage'));
-const HistoryPage = React.lazy(() => import('./pages/User/HistoryPage'));
-const NotificationsPage = React.lazy(() => import('./pages/User/NotificationsPage'));
-const ProfilePage = React.lazy(() => import('./pages/User/ProfilePage'));
-const GenerateTokenPage = React.lazy(() => import('./pages/User/GenerateTokenPage'));
-const UserHelpPage = React.lazy(() => import('./pages/User/UserHelpPage'));
+// User - IMPORTED STATICALLY FOR SPEED
+import UserHome from './pages/User/UserHome';
+import MyTokensPage from './pages/User/MyTokensPage';
+import HistoryPage from './pages/User/HistoryPage';
+import NotificationsPage from './pages/User/NotificationsPage';
+import ProfilePage from './pages/User/ProfilePage';
+import GenerateTokenPage from './pages/User/GenerateTokenPage';
+import UserHelpPage from './pages/User/UserHelpPage';
 
 // Sub-component for Mobile Bottom Nav
 const MobileBottomNav = ({ page, setPage, t, onLogout }) => {
