@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { API_BASE_URL } from '../../utils/constants';
 import { T } from '../../i18n/translations';
+import { cachedFetch } from '../../utils/apiCache';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend

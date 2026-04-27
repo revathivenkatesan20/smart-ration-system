@@ -3,6 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { T } from '../../i18n/translations';
 import { API_BASE_URL, MOCK } from '../../utils/constants';
 import { statusBadge } from '../../utils/logic';
+import { cachedFetch } from '../../utils/apiCache';
 import { 
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip, 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend 
