@@ -100,10 +100,10 @@ const LoginPage = () => {
       });
       const data = await res.json();
       if (data.success && data.data && data.data.token) {
-        localStorage.setItem('token', data.data.token);
-        localStorage.setItem('rationCardNumber', card);
-        localStorage.setItem('userName', data.data.name||'User');
-        localStorage.setItem('role', 'USER');
+        sessionStorage.setItem('token', data.data.token);
+        sessionStorage.setItem('rationCardNumber', card);
+        sessionStorage.setItem('userName', data.data.name||'User');
+        sessionStorage.setItem('role', 'USER');
         login({ token:data.data.token, role:'USER', id:data.data.id,
           name:data.data.name||card, rationCard:card, rationCardNumber:card });
       } else {

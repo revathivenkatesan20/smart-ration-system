@@ -122,7 +122,7 @@ const AdminAIPage = () => {
   useEffect(() => {
     const fetchShops = async () => {
       const res = await cachedFetch(`${API_BASE_URL}/api/admin/shops`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
       });
       const data = await res.json();
       if (data.success) setShops(data.data);
@@ -133,7 +133,7 @@ const AdminAIPage = () => {
   useEffect(() => {
     const fetchAIData = async () => {
       setLoading(true);
-      const authToken = localStorage.getItem('token');
+      const authToken = sessionStorage.getItem('token');
       const shopParam = selectedShop === 'all' ? '' : `?shopId=${selectedShop}`;
       
       try {
@@ -294,7 +294,7 @@ const AdminAIPage = () => {
                       disabled={loading || approved.includes(i)}
                       onClick={async () => {
                         try {
-                          const authToken = localStorage.getItem('token');
+                          const authToken = sessionStorage.getItem('token');
                           const res = await cachedFetch(`${API_BASE_URL}/api/admin/ai/execute-redistribution`, {
                             method: 'POST',
                             headers: { 

@@ -16,7 +16,7 @@ const AdminStockPage = () => {
   const [threshold, setThreshold] = useState('');
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (!token) {
       window.globalToast?.('Error', 'Please login again', 'error');
       setLoading(false);
@@ -41,7 +41,7 @@ const AdminStockPage = () => {
       const res = await cachedFetch(`${API_BASE_URL}/api/stock/admin/update`, {
         method:'PUT',
         headers:{'Content-Type':'application/json',
-          'Authorization':`Bearer ${localStorage.getItem('token')}`},
+          'Authorization':`Bearer ${sessionStorage.getItem('token')}`},
         body: JSON.stringify({
           shopId: updateModal.shopId,
           itemId: updateModal.id,
@@ -54,7 +54,7 @@ const AdminStockPage = () => {
         window.globalToast?.('Success', t('updateStock'), 'success');
         // Refresh local state or re-fetch
         cachedFetch(`${API_BASE_URL}/api/admin/stock/all`, {
-          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+          headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
         })
           .then(res => res.json())
           .then(data => { if (data.success) setStockData(data.data); });

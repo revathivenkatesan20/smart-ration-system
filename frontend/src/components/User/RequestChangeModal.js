@@ -158,7 +158,7 @@ const RequestChangeModal = ({ profile, onClose, onRefresh, lang = 'en' }) => {
   const handleSendOtp = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
       const res = await fetch(`${API_BASE_URL}/api/user/change-request/send-otp`, {
         method: 'POST',
         headers: { 
@@ -181,7 +181,7 @@ const RequestChangeModal = ({ profile, onClose, onRefresh, lang = 'en' }) => {
     if (code.length < 6) return;
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
       const vRes = await fetch(`${API_BASE_URL}/api/user/change-request/verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },

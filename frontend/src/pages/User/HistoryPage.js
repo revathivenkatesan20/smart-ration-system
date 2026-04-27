@@ -12,7 +12,7 @@ const HistoryPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const authToken = localStorage.getItem('token');
+    const authToken = sessionStorage.getItem('token');
     if (!authToken) { setLoading(false); return; }
     cachedFetch(`${API_BASE_URL}/api/user/transactions`, {
       headers: { Authorization: `Bearer ${authToken}` }

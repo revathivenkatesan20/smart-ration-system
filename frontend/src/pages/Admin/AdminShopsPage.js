@@ -58,7 +58,7 @@ const AdminShopsPage = () => {
 
   useEffect(() => {
     cachedFetch(`${API_BASE_URL}/api/admin/shops`, {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
     })
     .then(res => {
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
@@ -77,7 +77,7 @@ const AdminShopsPage = () => {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${sessionStorage.getItem('token')}`
         },
         body: JSON.stringify(form)
       });
@@ -87,7 +87,7 @@ const AdminShopsPage = () => {
         setEditModal(null);
         // Refresh shops list
         cachedFetch(`${API_BASE_URL}/api/admin/shops`, {
-          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+          headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
         })
         .then(res => res.json())
         .then(data => { if (data.success) setShops(data.data); });

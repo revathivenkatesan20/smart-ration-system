@@ -15,7 +15,7 @@ const AdminTokensPage = () => {
   const loadTokens = () => {
     setLoading(true);
     cachedFetch(`${API_BASE_URL}/api/admin/tokens`, {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
     })
     .then(res => {
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
@@ -38,7 +38,7 @@ const AdminTokensPage = () => {
       const tokenNum = tok.number || tok.tokenNumber;
       const res = await cachedFetch(`${API_BASE_URL}/api/tokens/${tokenNum}/collect`, {
         method:'PUT',
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
       });
       const data = await res.json();
       if (data.success) {

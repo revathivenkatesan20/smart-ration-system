@@ -68,14 +68,14 @@ const ShopAdminProcurementPage = () => {
   }, []);
 
   const getHeaders = () => ({
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
     'Content-Type': 'application/json'
   });
 
   const fetchData = async () => {
     setLoading(true);
     setError(null);
-    const headers = { 'Authorization': `Bearer ${localStorage.getItem('token')}` };
+    const headers = { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` };
     
     try {
       const [stockRes, histRes] = await Promise.all([

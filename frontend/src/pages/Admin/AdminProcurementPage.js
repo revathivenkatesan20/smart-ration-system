@@ -19,7 +19,7 @@ const AdminProcurementPage = () => {
   const fetchRequests = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
       const res = await cachedFetch(`${API_BASE_URL}/api/admin/procurement/pending`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -36,7 +36,7 @@ const AdminProcurementPage = () => {
   const handleAction = async (id, action) => {
     setProcessingId(id);
     try {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
       const res = await cachedFetch(`${API_BASE_URL}/api/admin/procurement/${id}/${action}`, {
         method: 'PUT',
         headers: { 

@@ -15,7 +15,7 @@ const AdminGrievancesPage = () => {
     setLoading(true);
     try {
       const res = await cachedFetch(`${API_BASE_URL}/api/user/grievances/admin/all`, {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
       });
       const data = await res.json();
       // Handle both: plain array OR {success: true, data: [...]} wrapper

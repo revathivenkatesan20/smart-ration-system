@@ -17,7 +17,7 @@ const ShopAdminProfile = () => {
   const fetchProfile = async () => {
     try {
       const res = await cachedFetch(`${API_BASE_URL}/api/shop-admin/profile`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
       });
       const data = await res.json();
       if (data.success) {
@@ -38,7 +38,7 @@ const ShopAdminProfile = () => {
     try {
       const res = await cachedFetch(`${API_BASE_URL}/api/shop-admin/update-profile`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${sessionStorage.getItem('token')}` },
         body: JSON.stringify({ 
           ...profile, 
           isOpen: !profile.isOpen,
@@ -61,7 +61,7 @@ const ShopAdminProfile = () => {
     try {
       const res = await cachedFetch(`${API_BASE_URL}/api/shop-admin/update-profile`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${sessionStorage.getItem('token')}` },
         body: JSON.stringify({ 
           ...profile, 
           noticeEn: notices.en,

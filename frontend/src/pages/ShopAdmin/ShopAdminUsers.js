@@ -15,7 +15,7 @@ const ShopAdminUsers = () => {
   useEffect(() => {
     cachedFetch(`${API_BASE_URL}/api/shop-admin/users`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
+        Authorization: `Bearer ${sessionStorage.getItem('token')}`
       }
     })
     .then(r => r.json())

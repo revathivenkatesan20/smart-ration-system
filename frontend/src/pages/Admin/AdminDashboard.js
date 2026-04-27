@@ -16,7 +16,7 @@ const AdminDashboard = () => {
   const [alerts, setAlerts] = useState([]);
 
   useEffect(() => {
-    const authToken = localStorage.getItem('token');
+    const authToken = sessionStorage.getItem('token');
     cachedFetch(`${API_BASE_URL}/api/admin/dashboard`, {
       headers: { Authorization: `Bearer ${authToken}` }
     })

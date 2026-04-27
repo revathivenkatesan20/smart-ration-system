@@ -183,7 +183,7 @@ const GenerateTokenPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
       if (!token || token === 'null' || token === 'undefined') {
         console.error('❌ Security Alert: No valid JWT token found in localStorage!');
         addToast('Session Expired', 'Please login again.', 'error');
@@ -437,7 +437,7 @@ const GenerateTokenPage = () => {
   const handleFinish = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
       const res = await cachedFetch(`${API_BASE_URL}/api/tokens/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },

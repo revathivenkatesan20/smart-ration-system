@@ -18,7 +18,7 @@ const AdminUsersPage = () => {
 
   useEffect(() => {
     cachedFetch(`${API_BASE_URL}/api/admin/users`, {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
     })
     .then(res => res.json())
     .then(data => { if (data.success) setUsers(data.data); })
@@ -31,7 +31,7 @@ const AdminUsersPage = () => {
       const res = await cachedFetch(`${API_BASE_URL}/api/admin/users/${id}/update`, {
         method: 'PUT',
         headers: { 
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(payload)
@@ -84,7 +84,7 @@ const AdminUsersPage = () => {
     try {
       await cachedFetch(`${API_BASE_URL}/api/admin/users/${id}/toggle`, {
         method:'PUT',
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
       });
       setUsers(prev => prev.map(u => u.id===id?{...u,active:!u.active}:u));
     } catch(err) { console.log('Toggle error:', err); }

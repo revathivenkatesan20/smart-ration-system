@@ -7,10 +7,11 @@ export const useApp = () => useContext(AppCtx);
 export const AppProvider = ({ children }) => {
   const [lang, setLang] = useState(localStorage.getItem('lang') || 'en');
   const [authData, setAuthData] = useState(() => {
-    const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role');
-    const rationCard = localStorage.getItem('rationCardNumber');
-    const userName = localStorage.getItem('userName');
+    // Auth data moved to sessionStorage for independent multi-tab support
+    const token = sessionStorage.getItem('token');
+    const role = sessionStorage.getItem('role');
+    const rationCard = sessionStorage.getItem('rationCardNumber');
+    const userName = sessionStorage.getItem('userName');
     if (token && role) {
       return { token, role, rationCard, rationCardNumber: rationCard, name: userName };
     }
@@ -79,10 +80,11 @@ export const AppProvider = ({ children }) => {
 
   const login = (data) => {
     if (data.token) {
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('role', data.role || 'USER');
-      localStorage.setItem('rationCardNumber', data.rationCard || data.rationCardNumber || '');
-      localStorage.setItem('userName', data.name || '');
+      // Use sessionStorage for tokens to prevent multi-tab conflicts
+      sessionStorage.setItem('token', data.token);
+      sessionStorage.setItem('role', data.role || 'USER');
+      sessionStorage.setItem('rationCardNumber', data.rationCard || data.rationCardNumber || '');
+      sessionStorage.setItem('userName', data.name || '');
     }
     setAuthData(data);
     // Wire push notifications for regular users
@@ -94,7 +96,11 @@ export const AppProvider = ({ children }) => {
 
   const logout = () => {
     setAuthData(null);
-    localStorage.clear();
+    // sessionStorage.clear() only affects current tab
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('role');
+    sessionStorage.removeItem('rationCardNumber');
+    sessionStorage.removeItem('userName');
     clearCache(); // Wipe API cache so next user starts fresh
   };
 

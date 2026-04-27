@@ -27,7 +27,7 @@ const UserHome = () => {
   const mapInstanceRef = React.useRef(null);
 
   useEffect(() => {
-    const authToken = localStorage.getItem('token');
+    const authToken = sessionStorage.getItem('token');
     if (!authToken) { setLoadingProfile(false); setLoadingStock(false); return; }
 
     // Optimization: Parallel fetches for everything
@@ -155,7 +155,7 @@ const UserHome = () => {
     if (!shopId) return;
     setShowSwitchModal(null);
     try {
-      const authToken = localStorage.getItem('token');
+      const authToken = sessionStorage.getItem('token');
       const res = await cachedFetch(`${API_BASE_URL}/api/user/update-shop`, {
         method: 'PUT',
         headers: { 
@@ -177,13 +177,13 @@ const UserHome = () => {
   };
 
   const userName = profile?.name||profile?.headOfFamily||
-    localStorage.getItem('userName')||'User';
+    sessionStorage.getItem('userName')||'User';
   const rationCard = profile?.rationCardNumber||
-    localStorage.getItem('rationCardNumber')||'';
+    sessionStorage.getItem('rationCardNumber')||'';
   const cardType = profile?.cardType||localStorage.getItem('cardType')||'PHH';
   const district = profile?.district||'';
   const shopDistrict = profile?.shopDistrict||'';
-  const shopName = profile?.shopName||localStorage.getItem('shopName')||'';
+  const shopName = profile?.shopName||sessionStorage.getItem('shopName')||'';
   const shopAddress = profile?.shopAddress||'';
   const shopManager = profile?.shopManagerName||'';
 

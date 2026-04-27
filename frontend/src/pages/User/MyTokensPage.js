@@ -15,7 +15,7 @@ const MyTokensPage = ({ newToken }) => {
   const [cancelConfirm, setCancelConfirm] = useState(null);
 
   useEffect(() => {
-    const authToken = localStorage.getItem('token');
+    const authToken = sessionStorage.getItem('token');
     if (!authToken) { setLoadingTokens(false); return; }
     cachedFetch(`${API_BASE_URL}/api/tokens/my-tokens`, {
       headers: { Authorization: `Bearer ${authToken}` }
@@ -56,7 +56,7 @@ const MyTokensPage = ({ newToken }) => {
   const handleCancel = async (tokenNumber) => {
     setCancelling(tokenNumber);
     try {
-      const authToken = localStorage.getItem('token');
+      const authToken = sessionStorage.getItem('token');
       const res = await cachedFetch(`${API_BASE_URL}/api/tokens/${tokenNumber}/cancel`, {
         method: 'PUT',
         headers: { Authorization: `Bearer ${authToken}` }

@@ -112,7 +112,7 @@ const AdminReportsPage = () => {
 
   useEffect(() => {
     cachedFetch(`${API_BASE_URL}/api/admin/shops`, {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
     })
     .then(res => res.json())
     .then(data => { if (data.success) setShops(data.data); })
@@ -124,7 +124,7 @@ const AdminReportsPage = () => {
     try {
       const shopParam = shopId === 'all' ? '' : `&shopId=${shopId}`;
       const res = await cachedFetch(`${API_BASE_URL}/api/admin/reports/data?from=${fromDate}&to=${toDate}${shopParam}`, {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
       });
       const data = await res.json();
       if (data.success) setReportResults(data);

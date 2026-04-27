@@ -17,7 +17,7 @@ const ShopAdminStock = () => {
   const loadStock = () => {
     cachedFetch(`${API_BASE_URL}/api/shop-admin/stock`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
+        Authorization: `Bearer ${sessionStorage.getItem('token')}`
       }
     })
     .then(r => r.json())
@@ -35,7 +35,7 @@ const ShopAdminStock = () => {
         method:'PUT',
         headers:{
           'Content-Type':'application/json',
-          'Authorization':`Bearer ${localStorage.getItem('token')}`
+          'Authorization':`Bearer ${sessionStorage.getItem('token')}`
         },
         body: JSON.stringify({
           stockId: editModal.stockId,

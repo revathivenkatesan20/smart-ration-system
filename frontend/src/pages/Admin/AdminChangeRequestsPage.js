@@ -20,7 +20,7 @@ const AdminChangeRequestsPage = () => {
   const fetchRequests = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
       const res = await cachedFetch(`${API_BASE_URL}/api/admin/change-requests`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -36,7 +36,7 @@ const AdminChangeRequestsPage = () => {
   const handleApprove = async (id) => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
       const res = await cachedFetch(`${API_BASE_URL}/api/admin/change-requests/${id}/approve`, {
         method: 'PUT',
         headers: { 
@@ -60,7 +60,7 @@ const AdminChangeRequestsPage = () => {
   const handleReject = async (id) => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
       const res = await cachedFetch(`${API_BASE_URL}/api/admin/change-requests/${id}/reject`, {
         method: 'PUT',
         headers: { 

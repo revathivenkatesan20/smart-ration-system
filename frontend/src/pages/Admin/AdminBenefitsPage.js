@@ -24,7 +24,7 @@ const AdminBenefitsPage = () => {
     setLoading(true);
     try {
       const res = await cachedFetch(`${API_BASE_URL}/api/admin/benefits`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
       });
       const data = await res.json();
       if (data.success) setBenefits(data.data);
@@ -38,7 +38,7 @@ const AdminBenefitsPage = () => {
     try {
       const res = await cachedFetch(`${API_BASE_URL}/api/admin/benefits/${id}/toggle`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
       });
       const data = await res.json();
       if (data.success) fetchBenefits();
@@ -53,7 +53,7 @@ const AdminBenefitsPage = () => {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${sessionStorage.getItem('token')}`
         },
         body: JSON.stringify(formData)
       });

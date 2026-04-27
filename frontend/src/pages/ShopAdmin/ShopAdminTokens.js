@@ -16,7 +16,7 @@ const ShopAdminTokens = () => {
     setLoading(true);
     cachedFetch(`${API_BASE_URL}/api/shop-admin/tokens`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
+        Authorization: `Bearer ${sessionStorage.getItem('token')}`
       }
     })
     .then(r => r.json())
@@ -34,7 +34,7 @@ const ShopAdminTokens = () => {
         {
           method:'PUT',
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
+            Authorization: `Bearer ${sessionStorage.getItem('token')}`
           }
         }
       );

@@ -10,7 +10,7 @@ const NotificationsPage = () => {
   const [notifs, setNotifs] = useState([]);
 
   useEffect(() => {
-    const authToken = localStorage.getItem('token');
+    const authToken = sessionStorage.getItem('token');
     if (!authToken) return;
     cachedFetch(`${API_BASE_URL}/api/user/notifications`, {
       headers: { Authorization: `Bearer ${authToken}` }

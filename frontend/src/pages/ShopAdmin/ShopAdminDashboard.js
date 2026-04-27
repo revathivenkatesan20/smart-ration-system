@@ -29,7 +29,7 @@ const ShopAdminDashboard = ({ setPage }) => {
 
   useEffect(() => {
     cachedFetch(`${API_BASE_URL}/api/shop-admin/dashboard`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` }
     })
     .then(r => {
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -57,7 +57,7 @@ const ShopAdminDashboard = ({ setPage }) => {
     
     cachedFetch(`${API_BASE_URL}/api/shop-admin/update-status`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${sessionStorage.getItem('token')}` },
       body: JSON.stringify({ isOpen: newStatus, closureReason: newStatus ? null : closureReasonInput })
     })
     .then(r => r.json())

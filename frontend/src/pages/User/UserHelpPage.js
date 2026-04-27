@@ -51,7 +51,7 @@ const UserHelpPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (!token) { setLoading(false); return; }
 
     Promise.all([
@@ -66,7 +66,7 @@ const UserHelpPage = () => {
   }, []);
 
   const fetchGrievances = () => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     cachedFetch(`${API_BASE_URL}/api/user/grievances`, { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json()).then(data => { if (data.success) setGrievances(data.data); });
   };
@@ -76,7 +76,7 @@ const UserHelpPage = () => {
     if (!gvForm.title || !gvForm.description) return;
     setIsSubmitting(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
       const res = await cachedFetch(`${API_BASE_URL}/api/user/grievances`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
@@ -271,7 +271,7 @@ const UserHelpPage = () => {
           lang={lang}
           onClose={() => setShowModal(false)} 
           onRefresh={() => {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
             cachedFetch(`${API_BASE_URL}/api/user/change-requests`, { headers: { Authorization: `Bearer ${token}` } })
               .then(r => r.json()).then(data => { if (data.success) setHistory(data.data); });
           }} 

@@ -13,7 +13,7 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const authToken = localStorage.getItem('token');
+    const authToken = sessionStorage.getItem('token');
     if (!authToken) return;
     
     setLoading(true);
@@ -41,9 +41,9 @@ const ProfilePage = () => {
   }, []);
 
   const t = (k) => T[lang][k]||k;
-  const name = profile?.name || profile?.headOfFamily || localStorage.getItem('userName') || 'User';
+  const name = profile?.name || profile?.headOfFamily || sessionStorage.getItem('userName') || 'User';
   const cardType = profile?.cardType || 'PHH';
-  const rationCard = profile?.rationCardNumber || localStorage.getItem('rationCardNumber') || '-';
+  const rationCard = profile?.rationCardNumber || sessionStorage.getItem('rationCardNumber') || '-';
   const district = profile?.district || '-';
 
   if (loading) return (
