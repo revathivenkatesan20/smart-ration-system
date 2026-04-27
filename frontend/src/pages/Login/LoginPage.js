@@ -3,6 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { T } from '../../i18n/translations';
 import { API_BASE_URL } from '../../utils/constants';
 import RegisterPage from './RegisterPage';
+import { cachedFetch } from '../../utils/apiCache';
 
 const LoginPage = () => {
   const { login, lang, toggleLang, triggerSms } = useApp();
@@ -35,7 +36,7 @@ const LoginPage = () => {
   // Since Render Free Tier "sleeps" after 15 mins, we send a tiny 
   // background request as soon as the user lands on the login page.
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/public/shops`).catch(() => {});
+    cachedFetch(`${API_BASE_URL}/api/public/shops`).catch(() => {});
   }, []);
 
   if (showRegister) {
@@ -66,7 +67,7 @@ const LoginPage = () => {
     setLoading(true);
     const card = rationCard.trim();
     try {
-      const res = await fetch(`${API_BASE_URL}/api/auth/user/send-otp`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/auth/user/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rationCardNumber: card, mobileNumber: mobile.trim() })
@@ -92,7 +93,7 @@ const LoginPage = () => {
     setLoading(true);
     const card = rationCard.trim();
     try {
-      const res = await fetch(`${API_BASE_URL}/api/auth/user/verify-otp`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/auth/user/verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rationCardNumber: card, mobileNumber: mobile.trim(), otp: code })
@@ -116,7 +117,7 @@ const LoginPage = () => {
     if (!username||!password) return;
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/auth/admin/login`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/auth/admin/login`, {
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({ username, password })
       });
@@ -132,7 +133,7 @@ const LoginPage = () => {
     if (!username || !password) return;
     setLoading(true);
     try {
-      const res = await fetch(
+      const res = await cachedFetch(
         `${API_BASE_URL}/api/shop-admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -162,7 +163,7 @@ const LoginPage = () => {
     if (!forgotId) return;
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/shop-admin/forgot-password/send-otp`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/shop-admin/forgot-password/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: forgotId })
@@ -184,7 +185,7 @@ const LoginPage = () => {
     if (code.length < 6 || !newPass) return;
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/shop-admin/forgot-password/reset`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/shop-admin/forgot-password/reset`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: forgotId, otp: code, newPassword: newPass })

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
+import { clearCache } from '../utils/apiCache';
 
 const AppCtx = createContext(null);
 export const useApp = () => useContext(AppCtx);
@@ -94,6 +95,7 @@ export const AppProvider = ({ children }) => {
   const logout = () => {
     setAuthData(null);
     localStorage.clear();
+    clearCache(); // Wipe API cache so next user starts fresh
   };
 
   const value = {

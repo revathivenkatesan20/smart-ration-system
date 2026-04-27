@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { API_BASE_URL } from '../../utils/constants';
 import { useApp } from '../../context/AppContext';
 import { T } from '../../i18n/translations';
+import { cachedFetch } from '../../utils/apiCache';
 
 const AdminProcurementPage = () => {
   const { lang } = useApp();
@@ -19,7 +20,7 @@ const AdminProcurementPage = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${API_BASE_URL}/api/admin/procurement/pending`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/admin/procurement/pending`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -36,7 +37,7 @@ const AdminProcurementPage = () => {
     setProcessingId(id);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${API_BASE_URL}/api/admin/procurement/${id}/${action}`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/admin/procurement/${id}/${action}`, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',

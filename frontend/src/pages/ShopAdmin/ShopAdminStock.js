@@ -3,6 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { API_BASE_URL } from '../../utils/constants';
 import { T } from '../../i18n/translations';
 import { statusBadge } from '../../utils/logic';
+import { cachedFetch } from '../../utils/apiCache';
 
 const ShopAdminStock = () => {
   const { lang } = useApp();
@@ -14,7 +15,7 @@ const ShopAdminStock = () => {
   const [saving, setSaving] = useState(false);
 
   const loadStock = () => {
-    fetch(`${API_BASE_URL}/api/shop-admin/stock`, {
+    cachedFetch(`${API_BASE_URL}/api/shop-admin/stock`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
@@ -30,7 +31,7 @@ const ShopAdminStock = () => {
   const handleUpdate = async () => {
     setSaving(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/shop-admin/stock/update`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/shop-admin/stock/update`, {
         method:'PUT',
         headers:{
           'Content-Type':'application/json',

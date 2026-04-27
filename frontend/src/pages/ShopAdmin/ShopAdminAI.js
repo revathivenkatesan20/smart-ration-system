@@ -24,7 +24,7 @@ const ShopAdminAI = () => {
   }, []);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/shop-admin/ai-insights`, {
+    cachedFetch(`${API_BASE_URL}/api/shop-admin/ai-insights`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
         'Accept-Language': lang === 'ta' ? 'ta' : 'en'

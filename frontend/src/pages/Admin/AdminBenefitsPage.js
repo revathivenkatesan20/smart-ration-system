@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { API_BASE_URL } from '../../utils/constants';
 import { useApp } from '../../context/AppContext';
 import { T } from '../../i18n/translations';
+import { cachedFetch } from '../../utils/apiCache';
 
 const AdminBenefitsPage = () => {
   const { lang } = useApp();
@@ -22,7 +23,7 @@ const AdminBenefitsPage = () => {
   const fetchBenefits = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/benefits`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/admin/benefits`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       const data = await res.json();
@@ -35,7 +36,7 @@ const AdminBenefitsPage = () => {
 
   const handleToggle = async (id) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/benefits/${id}/toggle`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/admin/benefits/${id}/toggle`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
@@ -48,7 +49,7 @@ const AdminBenefitsPage = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/benefits`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/admin/benefits`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

@@ -4,13 +4,14 @@ import { useApp } from '../../context/AppContext';
 import { T } from '../../i18n/translations';
 import { API_BASE_URL } from '../../utils/constants';
 import { statusBadge } from '../../utils/logic';
+import { cachedFetch } from '../../utils/apiCache';
 
 const StockViewForShop = ({ shopId }) => {
   const [stock, setStock] = useState([]);
   const { lang } = useApp();
   const t = (k) => T[lang][k]||k;
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/stock/shop/${shopId}`)
+    cachedFetch(`${API_BASE_URL}/api/stock/shop/${shopId}`)
     .then(res => res.json())
     .then(data => { if (data.success) setStock(data.data); })
     .catch(()=>{});
@@ -56,7 +57,7 @@ const AdminShopsPage = () => {
   const [form, setForm] = useState({});
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/admin/shops`, {
+    cachedFetch(`${API_BASE_URL}/api/admin/shops`, {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     })
     .then(res => {
@@ -72,7 +73,7 @@ const AdminShopsPage = () => {
 
   const saveShop = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/shops/${editModal.id}`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/admin/shops/${editModal.id}`, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
@@ -85,7 +86,7 @@ const AdminShopsPage = () => {
         window.globalToast?.('Success', 'Shop details updated successfully', 'success');
         setEditModal(null);
         // Refresh shops list
-        fetch(`${API_BASE_URL}/api/admin/shops`, {
+        cachedFetch(`${API_BASE_URL}/api/admin/shops`, {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
         })
         .then(res => res.json())

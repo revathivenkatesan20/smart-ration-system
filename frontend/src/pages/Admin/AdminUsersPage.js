@@ -3,6 +3,7 @@ import PortalModal from '../../components/Common/PortalModal';
 import { API_BASE_URL } from '../../utils/constants';
 import { useApp } from '../../context/AppContext';
 import { T } from '../../i18n/translations';
+import { cachedFetch } from '../../utils/apiCache';
 
 const AdminUsersPage = () => {
   const { lang, adminEditContext } = useApp();
@@ -16,7 +17,7 @@ const AdminUsersPage = () => {
   const { setAdminEditContext } = useApp(); // Access setter to clear context
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/admin/users`, {
+    cachedFetch(`${API_BASE_URL}/api/admin/users`, {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     })
     .then(res => res.json())
@@ -27,7 +28,7 @@ const AdminUsersPage = () => {
 
   const handleUpdate = async (id, payload) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/users/${id}/update`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/admin/users/${id}/update`, {
         method: 'PUT',
         headers: { 
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -81,7 +82,7 @@ const AdminUsersPage = () => {
 
   const toggleUser = async (id) => {
     try {
-      await fetch(`${API_BASE_URL}/api/admin/users/${id}/toggle`, {
+      await cachedFetch(`${API_BASE_URL}/api/admin/users/${id}/toggle`, {
         method:'PUT',
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });

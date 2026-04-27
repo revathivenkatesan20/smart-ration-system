@@ -3,6 +3,7 @@ import { API_BASE_URL } from '../../utils/constants';
 import { useApp } from '../../context/AppContext';
 import { T } from '../../i18n/translations';
 import { tokenStatusTag } from '../../utils/logic';
+import { cachedFetch } from '../../utils/apiCache';
 
 const ShopAdminReports = () => {
   const { lang } = useApp();
@@ -11,7 +12,7 @@ const ShopAdminReports = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/shop-admin/reports`, {
+    cachedFetch(`${API_BASE_URL}/api/shop-admin/reports`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }

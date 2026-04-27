@@ -27,7 +27,7 @@ const ShopAdminDashboard = ({ setPage }) => {
   }, []);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/shop-admin/dashboard`, {
+    cachedFetch(`${API_BASE_URL}/api/shop-admin/dashboard`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     })
     .then(r => {
@@ -54,7 +54,7 @@ const ShopAdminDashboard = ({ setPage }) => {
     setIsUpdatingStatus(true);
     const newStatus = !data.isOpen;
     
-    fetch(`${API_BASE_URL}/api/shop-admin/update-status`, {
+    cachedFetch(`${API_BASE_URL}/api/shop-admin/update-status`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
       body: JSON.stringify({ isOpen: newStatus, closureReason: newStatus ? null : closureReasonInput })

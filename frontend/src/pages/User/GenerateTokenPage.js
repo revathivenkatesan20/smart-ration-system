@@ -5,6 +5,7 @@ import { T } from '../../i18n/translations';
 import { API_BASE_URL } from '../../utils/constants';
 import { memberIcon } from '../../utils/logic';
 import './GenerateTokenPage.css';
+import { cachedFetch } from '../../utils/apiCache';
 
 // Helper to check if an item is Rice (for shared quota logic)
 const isRiceItem = (item) => item?.nameEn?.toLowerCase()?.includes('rice');
@@ -193,7 +194,7 @@ const GenerateTokenPage = () => {
       console.log('🎫 Security Check: Token present, fetching profile...');
 
       try {
-        const profRes = await fetch(`${API_BASE_URL}/api/user/profile`, { headers: { Authorization: `Bearer ${token}` } });
+        const profRes = await cachedFetch(`${API_BASE_URL}/api/user/profile`, { headers: { Authorization: `Bearer ${token}` } });
         if (profRes.status === 401) {
           localStorage.clear();
           window.location.href = '/';
@@ -212,7 +213,7 @@ const GenerateTokenPage = () => {
               return; // We will handle UI in the return
             }
 
-            const shopsRes = await fetch(`${API_BASE_URL}/api/public/shops`);
+            const shopsRes = await cachedFetch(`${API_BASE_URL}/api/public/shops`);
             const shopsData = await shopsRes.json();
             const shop = shopsData.data.find(s => s.id === sid) || shopsData.data[0];
             
@@ -224,19 +225,19 @@ const GenerateTokenPage = () => {
               waitTime: shopStatus.msg
             });
 
-            const stockRes = await fetch(`${API_BASE_URL}/api/stock/shop/${shop.id}`);
+            const stockRes = await cachedFetch(`${API_BASE_URL}/api/stock/shop/${shop.id}`);
             const stockData = await stockRes.json();
             
             const url = `${API_BASE_URL}/api/tokens/monthly-quota?rationCardNumber=${encodeURIComponent(rcn)}`;
             console.log(`📡 Initial Quota Fetch (Public): ${url}`);
 
-            const quotaRes = await fetch(url); // Now handled by permitAll() bypass
+            const quotaRes = await cachedFetch(url); // Now handled by permitAll() bypass
             const qData = await quotaRes.json();
             if (qData.success) {
               setQuota(qData.data);
             }
 
-          const membersRes = await fetch(`${API_BASE_URL}/api/user/members`, { headers: { Authorization: `Bearer ${token}` } });
+          const membersRes = await cachedFetch(`${API_BASE_URL}/api/user/members`, { headers: { Authorization: `Bearer ${token}` } });
           const mData = await membersRes.json();
           if (mData.success) setMembers(mData.data);
 
@@ -286,7 +287,7 @@ const GenerateTokenPage = () => {
         const url = `${API_BASE_URL}/api/tokens/monthly-quota?rationCardNumber=${encodeURIComponent(rcn)}&isThreeMonth=${isThreeMonth}`;
         
         // --- 📡 Real-time Shop Status Sync ---
-        const shopsRes = await fetch(`${API_BASE_URL}/api/public/shops`);
+        const shopsRes = await cachedFetch(`${API_BASE_URL}/api/public/shops`);
         const shopsData = await shopsRes.json();
         const freshShop = shopsData.data?.find(s => s.id === (profile.shopId || 1));
         if (freshShop) {
@@ -294,7 +295,7 @@ const GenerateTokenPage = () => {
            setShopInfo(prev => ({ ...prev, isOpen: shopStatus.isOpen, waitTime: shopStatus.isOpen ? prev.waitTime : shopStatus.msg }));
         }
 
-        const quotaRes = await fetch(url);
+        const quotaRes = await cachedFetch(url);
         const qData = await quotaRes.json();
         
         if (qData.success) {
@@ -437,7 +438,7 @@ const GenerateTokenPage = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${API_BASE_URL}/api/tokens/generate`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/tokens/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({

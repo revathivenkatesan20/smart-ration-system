@@ -3,6 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { T } from '../../i18n/translations';
 import { API_BASE_URL } from '../../utils/constants';
 import { tokenStatusTag } from '../../utils/logic';
+import { cachedFetch } from '../../utils/apiCache';
 
 const HistoryPage = () => {
   const { lang } = useApp();
@@ -13,7 +14,7 @@ const HistoryPage = () => {
   useEffect(() => {
     const authToken = localStorage.getItem('token');
     if (!authToken) { setLoading(false); return; }
-    fetch(`${API_BASE_URL}/api/user/transactions`, {
+    cachedFetch(`${API_BASE_URL}/api/user/transactions`, {
       headers: { Authorization: `Bearer ${authToken}` }
     })
     .then(res => res.json())

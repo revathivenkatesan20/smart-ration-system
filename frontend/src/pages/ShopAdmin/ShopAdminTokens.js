@@ -3,6 +3,7 @@ import { API_BASE_URL } from '../../utils/constants';
 import { useApp } from '../../context/AppContext';
 import { T } from '../../i18n/translations';
 import { tokenStatusTag } from '../../utils/logic';
+import { cachedFetch } from '../../utils/apiCache';
 
 const ShopAdminTokens = () => {
   const { lang } = useApp();
@@ -13,7 +14,7 @@ const ShopAdminTokens = () => {
 
   const loadTokens = () => {
     setLoading(true);
-    fetch(`${API_BASE_URL}/api/shop-admin/tokens`, {
+    cachedFetch(`${API_BASE_URL}/api/shop-admin/tokens`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
@@ -28,7 +29,7 @@ const ShopAdminTokens = () => {
 
   const markCollected = async (tokenNum) => {
     try {
-      const res = await fetch(
+      const res = await cachedFetch(
         `${API_BASE_URL}/api/tokens/${tokenNum}/collect`,
         {
           method:'PUT',

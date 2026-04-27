@@ -4,6 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { T } from '../../i18n/translations';
 import { API_BASE_URL } from '../../utils/constants';
 import { statusBadge } from '../../utils/logic';
+import { cachedFetch } from '../../utils/apiCache';
 
 const AdminStockPage = () => {
   const { lang } = useApp();
@@ -21,7 +22,7 @@ const AdminStockPage = () => {
       setLoading(false);
       return;
     }
-    fetch(`${API_BASE_URL}/api/admin/stock/all`, {
+    cachedFetch(`${API_BASE_URL}/api/admin/stock/all`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
     .then(res => {
@@ -37,7 +38,7 @@ const AdminStockPage = () => {
 
   const handleUpdate = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/stock/admin/update`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/stock/admin/update`, {
         method:'PUT',
         headers:{'Content-Type':'application/json',
           'Authorization':`Bearer ${localStorage.getItem('token')}`},
@@ -52,7 +53,7 @@ const AdminStockPage = () => {
       if (data.success) {
         window.globalToast?.('Success', t('updateStock'), 'success');
         // Refresh local state or re-fetch
-        fetch(`${API_BASE_URL}/api/admin/stock/all`, {
+        cachedFetch(`${API_BASE_URL}/api/admin/stock/all`, {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
         })
           .then(res => res.json())

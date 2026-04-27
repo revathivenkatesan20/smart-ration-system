@@ -3,6 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { T } from '../../i18n/translations';
 import { API_BASE_URL } from '../../utils/constants';
 import { safeInitMap } from '../../utils/logic';
+import { cachedFetch } from '../../utils/apiCache';
 
 /* ── Pill-button selector: replaces native <select> to avoid OS dropdown overflow ── */
 const PillSelect = ({ label, options, value, onChange }) => (
@@ -140,7 +141,7 @@ const RegisterPage = ({ onBack, onSuccess }) => {
   useEffect(() => {
     const initData = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/api/public/shops`);
+        const res = await cachedFetch(`${API_BASE_URL}/api/public/shops`);
         const data = await res.json();
         if (data.success) {
           setAllShops(data.data);
@@ -290,7 +291,7 @@ const RegisterPage = ({ onBack, onSuccess }) => {
     setError('');
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -316,7 +317,7 @@ const RegisterPage = ({ onBack, onSuccess }) => {
     if (code.length < 6) return;
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/auth/verify-registration`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/auth/verify-registration`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

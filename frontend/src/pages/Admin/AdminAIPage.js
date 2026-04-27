@@ -120,7 +120,7 @@ const AdminAIPage = () => {
 
   useEffect(() => {
     const fetchShops = async () => {
-      const res = await fetch(`${API_BASE_URL}/api/admin/shops`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/admin/shops`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       const data = await res.json();
@@ -137,13 +137,13 @@ const AdminAIPage = () => {
       
       try {
         const [d1, d2] = await Promise.all([
-          fetch(`${API_BASE_URL}/api/admin/ai/insights${shopParam}`, {
+          cachedFetch(`${API_BASE_URL}/api/admin/ai/insights${shopParam}`, {
             headers: { 
               'Authorization': `Bearer ${authToken}`,
               'Accept-Language': lang === 'ta' ? 'ta' : 'en'
             }
           }).then(r => r.json()),
-          fetch(`${API_BASE_URL}/api/admin/ai/balancing${shopParam}`, {
+          cachedFetch(`${API_BASE_URL}/api/admin/ai/balancing${shopParam}`, {
             headers: { 'Authorization': `Bearer ${authToken}` }
           }).then(r => r.json())
         ]);
@@ -294,7 +294,7 @@ const AdminAIPage = () => {
                       onClick={async () => {
                         try {
                           const authToken = localStorage.getItem('token');
-                          const res = await fetch(`${API_BASE_URL}/api/admin/ai/execute-redistribution`, {
+                          const res = await cachedFetch(`${API_BASE_URL}/api/admin/ai/execute-redistribution`, {
                             method: 'POST',
                             headers: { 
                               'Content-Type': 'application/json',

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { API_BASE_URL } from '../../utils/constants';
 import { useApp } from '../../context/AppContext';
 import { T } from '../../i18n/translations';
+import { cachedFetch } from '../../utils/apiCache';
 
 /* Custom shop select - Combobox style with unified search bar */
 const MiniShopSelect = ({ value, onChange, shops, t }) => {
@@ -110,7 +111,7 @@ const AdminReportsPage = () => {
   }, []);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/admin/shops`, {
+    cachedFetch(`${API_BASE_URL}/api/admin/shops`, {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     })
     .then(res => res.json())
@@ -122,7 +123,7 @@ const AdminReportsPage = () => {
     setLoading(true);
     try {
       const shopParam = shopId === 'all' ? '' : `&shopId=${shopId}`;
-      const res = await fetch(`${API_BASE_URL}/api/admin/reports/data?from=${fromDate}&to=${toDate}${shopParam}`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/admin/reports/data?from=${fromDate}&to=${toDate}${shopParam}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       const data = await res.json();

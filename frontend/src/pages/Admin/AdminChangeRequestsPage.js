@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { API_BASE_URL } from '../../utils/constants';
 import { useApp } from '../../context/AppContext';
 import { T } from '../../i18n/translations';
+import { cachedFetch } from '../../utils/apiCache';
 
 const AdminChangeRequestsPage = () => {
   const { lang, setPage, setAdminEditContext } = useApp();
@@ -20,7 +21,7 @@ const AdminChangeRequestsPage = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${API_BASE_URL}/api/admin/change-requests`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/admin/change-requests`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -36,7 +37,7 @@ const AdminChangeRequestsPage = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${API_BASE_URL}/api/admin/change-requests/${id}/approve`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/admin/change-requests/${id}/approve`, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
@@ -60,7 +61,7 @@ const AdminChangeRequestsPage = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${API_BASE_URL}/api/admin/change-requests/${id}/reject`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/admin/change-requests/${id}/reject`, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',

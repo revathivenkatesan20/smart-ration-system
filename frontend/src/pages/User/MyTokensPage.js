@@ -4,6 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { T } from '../../i18n/translations';
 import { API_BASE_URL } from '../../utils/constants';
 import { tokenStatusTag } from '../../utils/logic';
+import { cachedFetch } from '../../utils/apiCache';
 
 const MyTokensPage = ({ newToken }) => {
   const { lang, setPage } = useApp();
@@ -16,7 +17,7 @@ const MyTokensPage = ({ newToken }) => {
   useEffect(() => {
     const authToken = localStorage.getItem('token');
     if (!authToken) { setLoadingTokens(false); return; }
-    fetch(`${API_BASE_URL}/api/tokens/my-tokens`, {
+    cachedFetch(`${API_BASE_URL}/api/tokens/my-tokens`, {
       headers: { Authorization: `Bearer ${authToken}` }
     })
     .then(res => res.json())
@@ -56,7 +57,7 @@ const MyTokensPage = ({ newToken }) => {
     setCancelling(tokenNumber);
     try {
       const authToken = localStorage.getItem('token');
-      const res = await fetch(`${API_BASE_URL}/api/tokens/${tokenNumber}/cancel`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/tokens/${tokenNumber}/cancel`, {
         method: 'PUT',
         headers: { Authorization: `Bearer ${authToken}` }
       });

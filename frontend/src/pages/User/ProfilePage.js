@@ -4,6 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { T } from '../../i18n/translations';
 import { API_BASE_URL } from '../../utils/constants';
 import { memberIcon } from '../../utils/logic';
+import { cachedFetch } from '../../utils/apiCache';
 
 const ProfilePage = () => {
   const { lang } = useApp();
@@ -17,8 +18,8 @@ const ProfilePage = () => {
     
     setLoading(true);
     Promise.all([
-      fetch(`${API_BASE_URL}/api/user/profile`, { headers: { Authorization: `Bearer ${authToken}` } }).then(res => res.json()),
-      fetch(`${API_BASE_URL}/api/user/members`, { headers: { Authorization: `Bearer ${authToken}` } }).then(res => res.json())
+      cachedFetch(`${API_BASE_URL}/api/user/profile`, { headers: { Authorization: `Bearer ${authToken}` } }).then(res => res.json()),
+      cachedFetch(`${API_BASE_URL}/api/user/members`, { headers: { Authorization: `Bearer ${authToken}` } }).then(res => res.json())
     ])
     .then(([profData, membData]) => {
       if (profData.success) setProfile(profData.data);

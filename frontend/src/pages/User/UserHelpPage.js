@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { API_BASE_URL } from '../../utils/constants';
 import RequestChangeModal from '../../components/User/RequestChangeModal';
+import { cachedFetch } from '../../utils/apiCache';
 
 const FAQ_DATA = [
   {
@@ -54,9 +55,9 @@ const UserHelpPage = () => {
     if (!token) { setLoading(false); return; }
 
     Promise.all([
-      fetch(`${API_BASE_URL}/api/user/profile`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()),
-      fetch(`${API_BASE_URL}/api/user/change-requests`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()),
-      fetch(`${API_BASE_URL}/api/user/grievances`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json())
+      cachedFetch(`${API_BASE_URL}/api/user/profile`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()),
+      cachedFetch(`${API_BASE_URL}/api/user/change-requests`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()),
+      cachedFetch(`${API_BASE_URL}/api/user/grievances`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json())
     ]).then(([profileData, histData, gvData]) => {
       if (profileData.success) setProfile(profileData.data);
       if (histData.success) setHistory(histData.data);
@@ -66,7 +67,7 @@ const UserHelpPage = () => {
 
   const fetchGrievances = () => {
     const token = localStorage.getItem('token');
-    fetch(`${API_BASE_URL}/api/user/grievances`, { headers: { Authorization: `Bearer ${token}` } })
+    cachedFetch(`${API_BASE_URL}/api/user/grievances`, { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json()).then(data => { if (data.success) setGrievances(data.data); });
   };
 
@@ -76,7 +77,7 @@ const UserHelpPage = () => {
     setIsSubmitting(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${API_BASE_URL}/api/user/grievances`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/user/grievances`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify(gvForm)
@@ -271,7 +272,7 @@ const UserHelpPage = () => {
           onClose={() => setShowModal(false)} 
           onRefresh={() => {
             const token = localStorage.getItem('token');
-            fetch(`${API_BASE_URL}/api/user/change-requests`, { headers: { Authorization: `Bearer ${token}` } })
+            cachedFetch(`${API_BASE_URL}/api/user/change-requests`, { headers: { Authorization: `Bearer ${token}` } })
               .then(r => r.json()).then(data => { if (data.success) setHistory(data.data); });
           }} 
         />

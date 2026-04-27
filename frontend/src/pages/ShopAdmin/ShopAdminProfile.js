@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { API_BASE_URL } from '../../utils/constants';
 import { T } from '../../i18n/translations';
+import { cachedFetch } from '../../utils/apiCache';
 
 const ShopAdminProfile = () => {
   const { addToast, lang } = useApp();
@@ -15,7 +16,7 @@ const ShopAdminProfile = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/shop-admin/profile`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/shop-admin/profile`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       const data = await res.json();
@@ -35,7 +36,7 @@ const ShopAdminProfile = () => {
     }
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/shop-admin/update-profile`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/shop-admin/update-profile`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
         body: JSON.stringify({ 
@@ -58,7 +59,7 @@ const ShopAdminProfile = () => {
   const updateNotices = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/shop-admin/update-profile`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/shop-admin/update-profile`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
         body: JSON.stringify({ 

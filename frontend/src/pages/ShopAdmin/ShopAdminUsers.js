@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { API_BASE_URL } from '../../utils/constants';
 import { useApp } from '../../context/AppContext';
 import { T } from '../../i18n/translations';
+import { cachedFetch } from '../../utils/apiCache';
 
 const ShopAdminUsers = () => {
   const { lang } = useApp();
@@ -12,7 +13,7 @@ const ShopAdminUsers = () => {
   const [viewModal, setViewModal] = useState(null);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/shop-admin/users`, {
+    cachedFetch(`${API_BASE_URL}/api/shop-admin/users`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }

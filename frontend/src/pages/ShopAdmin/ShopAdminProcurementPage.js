@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
 import { API_BASE_URL } from '../../utils/constants';
 import { T } from '../../i18n/translations';
+import { cachedFetch } from '../../utils/apiCache';
 
 /* Viewport-safe select replacement */
 const MiniItemSelect = ({ value, onChange, items, lang, placeholder }) => {
@@ -78,8 +79,8 @@ const ShopAdminProcurementPage = () => {
     
     try {
       const [stockRes, histRes] = await Promise.all([
-        fetch(`${API_BASE_URL}/api/shop-admin/stock`, { headers }),
-        fetch(`${API_BASE_URL}/api/shop-admin/procurement/my-history`, { headers })
+        cachedFetch(`${API_BASE_URL}/api/shop-admin/stock`, { headers }),
+        cachedFetch(`${API_BASE_URL}/api/shop-admin/procurement/my-history`, { headers })
       ]);
 
       const [stockData, histData] = await Promise.all([
@@ -117,7 +118,7 @@ const ShopAdminProcurementPage = () => {
 
     setSubmitting(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/shop-admin/procurement/request`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/shop-admin/procurement/request`, {
         method: 'POST',
         headers: getHeaders(),
         body: JSON.stringify({

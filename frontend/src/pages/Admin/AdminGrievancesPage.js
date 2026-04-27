@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { API_BASE_URL } from '../../utils/constants';
 import { useApp } from '../../context/AppContext';
 import { T } from '../../i18n/translations';
+import { cachedFetch } from '../../utils/apiCache';
 
 const AdminGrievancesPage = () => {
   const { lang } = useApp();
@@ -13,7 +14,7 @@ const AdminGrievancesPage = () => {
   const loadGrievances = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/user/grievances/admin/all`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/user/grievances/admin/all`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       const data = await res.json();

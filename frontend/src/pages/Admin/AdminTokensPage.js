@@ -3,6 +3,7 @@ import { API_BASE_URL } from '../../utils/constants';
 import { useApp } from '../../context/AppContext';
 import { T } from '../../i18n/translations';
 import { tokenStatusTag } from '../../utils/logic';
+import { cachedFetch } from '../../utils/apiCache';
 
 const AdminTokensPage = () => {
   const { lang } = useApp();
@@ -13,7 +14,7 @@ const AdminTokensPage = () => {
 
   const loadTokens = () => {
     setLoading(true);
-    fetch(`${API_BASE_URL}/api/admin/tokens`, {
+    cachedFetch(`${API_BASE_URL}/api/admin/tokens`, {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     })
     .then(res => {
@@ -35,7 +36,7 @@ const AdminTokensPage = () => {
   const markCollected = async (tok) => {
     try {
       const tokenNum = tok.number || tok.tokenNumber;
-      const res = await fetch(`${API_BASE_URL}/api/tokens/${tokenNum}/collect`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/tokens/${tokenNum}/collect`, {
         method:'PUT',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });

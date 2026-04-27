@@ -4,6 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { T } from '../../i18n/translations';
 import { API_BASE_URL, MOCK } from '../../utils/constants';
 import { statusBadge, safeInitMap } from '../../utils/logic';
+import { cachedFetch } from '../../utils/apiCache';
 
 const UserHome = () => {
   const { 
@@ -30,11 +31,11 @@ const UserHome = () => {
     if (!authToken) { setLoadingProfile(false); setLoadingStock(false); return; }
 
     // Optimization: Parallel fetches for everything
-    const fetchProfile = fetch(`${API_BASE_URL}/api/user/profile`, {
+    const fetchProfile = cachedFetch(`${API_BASE_URL}/api/user/profile`, {
       headers: { Authorization: `Bearer ${authToken}` }
     }).then(r => r.status === 401 ? (localStorage.clear(), window.location.href='/', null) : r.json());
 
-    const fetchShops = fetch(`${API_BASE_URL}/api/public/shops`).then(r => r.json());
+    const fetchShops = cachedFetch(`${API_BASE_URL}/api/public/shops`).then(r => r.json());
 
     Promise.all([fetchProfile, fetchShops]).then(([profileRes, shopsRes]) => {
       if (profileRes?.success && profileRes?.data) {
@@ -45,7 +46,7 @@ const UserHome = () => {
         
         // Parallel stock fetch once we have profile
         const shopId = p.shopId || 4;
-        fetch(`${API_BASE_URL}/api/stock/shop/${shopId}`)
+        cachedFetch(`${API_BASE_URL}/api/stock/shop/${shopId}`)
           .then(r => r.json())
           .then(stockData => {
             if (stockData?.success && stockData?.data) {
@@ -155,7 +156,7 @@ const UserHome = () => {
     setShowSwitchModal(null);
     try {
       const authToken = localStorage.getItem('token');
-      const res = await fetch(`${API_BASE_URL}/api/user/update-shop`, {
+      const res = await cachedFetch(`${API_BASE_URL}/api/user/update-shop`, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',

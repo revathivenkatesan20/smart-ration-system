@@ -16,7 +16,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     const authToken = localStorage.getItem('token');
-    fetch(`${API_BASE_URL}/api/admin/dashboard`, {
+    cachedFetch(`${API_BASE_URL}/api/admin/dashboard`, {
       headers: { Authorization: `Bearer ${authToken}` }
     })
     .then(res => {
@@ -33,7 +33,7 @@ const AdminDashboard = () => {
       setD(MOCK.adminDash);
     });
 
-    fetch(`${API_BASE_URL}/api/stock/admin/alerts`, {
+    cachedFetch(`${API_BASE_URL}/api/stock/admin/alerts`, {
       headers: { Authorization: `Bearer ${authToken}` }
     })
     .then(res => {
