@@ -3,6 +3,13 @@ import './index.css';
 import { Toaster } from 'react-hot-toast';
 import { AppProvider, useApp } from './context/AppContext';
 import { T } from './i18n/translations';
+import UserHome from './pages/User/UserHome';
+import MyTokensPage from './pages/User/MyTokensPage';
+import HistoryPage from './pages/User/HistoryPage';
+import NotificationsPage from './pages/User/NotificationsPage';
+import ProfilePage from './pages/User/ProfilePage';
+import GenerateTokenPage from './pages/User/GenerateTokenPage';
+import UserHelpPage from './pages/User/UserHelpPage';
 
 // Layout
 import Sidebar from './components/Sidebar';
@@ -39,14 +46,7 @@ const ShopAdminAI = React.lazy(() => import('./pages/ShopAdmin/ShopAdminAI'));
 const ShopAdminProfile = React.lazy(() => import('./pages/ShopAdmin/ShopAdminProfile'));
 const ShopAdminProcurementPage = React.lazy(() => import('./pages/ShopAdmin/ShopAdminProcurementPage'));
 
-// User - IMPORTED STATICALLY FOR SPEED
-import UserHome from './pages/User/UserHome';
-import MyTokensPage from './pages/User/MyTokensPage';
-import HistoryPage from './pages/User/HistoryPage';
-import NotificationsPage from './pages/User/NotificationsPage';
-import ProfilePage from './pages/User/ProfilePage';
-import GenerateTokenPage from './pages/User/GenerateTokenPage';
-import UserHelpPage from './pages/User/UserHelpPage';
+// User - IMPORTED STATICALLY AT TOP
 
 // Sub-component for Mobile Bottom Nav
 const MobileBottomNav = ({ page, setPage, t, onLogout }) => {
