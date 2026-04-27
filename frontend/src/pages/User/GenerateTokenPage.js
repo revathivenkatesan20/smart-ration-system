@@ -512,7 +512,9 @@ const GenerateTokenPage = () => {
       {profile && profile.isActive !== false && step === 1 && (
         <div className="animate-scale-in" style={{ paddingBottom: 100 }}>
           <div className="card glass-card" style={{ padding: '24px 16px', borderRadius: 24, boxShadow: '0 8px 32px rgba(0,0,0,0.04)' }}>
-            <h2 style={{ fontSize: 20, marginBottom: 24, textAlign: 'center', color: 'var(--gray-800)', fontWeight: 900 }}>👨‍👩‍👧‍👦 Who is collecting today?</h2>
+            <h2 style={{ fontSize: 20, marginBottom: 24, textAlign: 'center', color: 'var(--gray-800)', fontWeight: 900 }}>
+              {lang === 'ta' ? '👨‍👩‍👧‍👦 இன்று யார் பொருட்களைப் பெறுகிறார்கள்?' : '👨‍👩‍👧‍👦 Who is collecting today?'}
+            </h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 16 }}>
               {members.map(m => (
                 <div 
@@ -529,7 +531,9 @@ const GenerateTokenPage = () => {
             </div>
           </div>
           <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '20px', background: 'white', borderTop: '1px solid var(--gray-200)', display: 'flex', justifyContent: 'center', zIndex: 10 }}>
-            <button className="btn btn-primary" style={{ width: '100%', maxWidth: 400, padding: '16px 24px', borderRadius: 16, fontWeight: 900, boxShadow: selectedMember !== null ? '0 8px 24px -4px rgba(22,101,52,0.4)' : 'none' }} disabled={selectedMember === null} onClick={() => navigateToStep(2)}>Continue to Item Selection →</button>
+            <button className="btn btn-primary" style={{ width: '100%', maxWidth: 400, padding: '16px 24px', borderRadius: 16, fontWeight: 900, boxShadow: selectedMember !== null ? '0 8px 24px -4px rgba(22,101,52,0.4)' : 'none' }} disabled={selectedMember === null} onClick={() => navigateToStep(2)}>
+              {lang === 'ta' ? 'பொருட்கள் தேர்வுக்குத் தொடரவும் →' : 'Continue to Item Selection →'}
+            </button>
           </div>
         </div>
       )}
@@ -540,12 +544,14 @@ const GenerateTokenPage = () => {
             <div className="card animate-slide-up" style={{ background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)', border: '2px solid var(--green)', padding: 32, textAlign: 'center', borderRadius: 24, marginBottom: 24 }}>
                <div style={{ fontSize: 56, marginBottom: 16 }}>🎉</div>
                <h2 style={{ fontSize: 22, fontWeight: 900, color: 'var(--green-dark)', marginBottom: 8, lineHeight: 1.4 }}>
-                  Overall your monthly quota has been purchased!
+                  {lang === 'ta' ? 'இந்த மாதத்திற்கான உங்கள் ஒதுக்கீடு முழுவதும் வாங்கப்பட்டது!' : 'Overall your monthly quota has been purchased!'}
                </h2>
                <p style={{ color: 'var(--gray-700)', fontSize: 14, fontWeight: 600, lineHeight: 1.6 }}>
-                  Please come and collect your ration items next month.
+                  {lang === 'ta' ? 'அடுத்த மாதம் உங்கள் ரேஷன் பொருட்களை வந்து பெற்றுக்கொள்ளுங்கள்.' : 'Please come and collect your ration items next month.'}
                </p>
-               <button className="btn btn-primary btn-lg" style={{ marginTop: 24, padding: '14px 32px', borderRadius: 16, fontWeight: 900 }} onClick={() => setPage('home')}>← Back to Dashboard</button>
+               <button className="btn btn-primary btn-lg" style={{ marginTop: 24, padding: '14px 32px', borderRadius: 16, fontWeight: 900 }} onClick={() => setPage('home')}>
+                  {lang === 'ta' ? '← முகப்புப் பக்கத்திற்குச் செல்க' : '← Back to Dashboard'}
+               </button>
             </div>
           ) : (
             <>
@@ -561,7 +567,7 @@ const GenerateTokenPage = () => {
                 <div className="animate-slide-up" style={{ background: 'var(--blue-light)', padding: '16px', borderRadius: 16, marginBottom: 20, display: 'flex', gap: 12, alignItems: 'center', border: '1px solid #bfdbfe' }}>
                   <span style={{ fontSize: 24 }}>🛒</span>
                   <div style={{ fontSize: 13, color: '#1e3a8a', fontWeight: 700, lineHeight: 1.5 }}>
-                    You still have items left to purchase this month. Select your items below to continue.
+                    {lang === 'ta' ? 'இந்த மாதம் நீங்கள் வாங்க வேண்டிய பொருட்கள் இன்னும் உள்ளன. தொடர கீழே உள்ள பொருட்களைத் தேர்ந்தெடுக்கவும்.' : 'You still have items left to purchase this month. Select your items below to continue.'}
                   </div>
                 </div>
               )}
@@ -580,8 +586,8 @@ const GenerateTokenPage = () => {
                   <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
                     <div style={{ fontSize: 32 }}>🛒</div>
                     <div>
-                      <h4 style={{ margin: 0, fontSize: 16, fontWeight: 900 }}>2026 3-Month Bundle</h4>
-                      <p style={{ margin: '4px 0 0', fontSize: 12, opacity: 0.8 }}>Advance purchase for major commodities</p>
+                      <h4 style={{ margin: 0, fontSize: 16, fontWeight: 900 }}>{lang === 'ta' ? '2026 3-மாத தொகுப்பு' : '2026 3-Month Bundle'}</h4>
+                      <p style={{ margin: '4px 0 0', fontSize: 12, opacity: 0.8 }}>{lang === 'ta' ? 'முக்கிய பொருட்களுக்கான முன்பதிவு' : 'Advance purchase for major commodities'}</p>
                     </div>
                   </div>
                   <div 
@@ -600,7 +606,7 @@ const GenerateTokenPage = () => {
                 </div>
                 {isThreeMonth && (
                   <div className="animate-fade-in" style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(255,255,255,0.2)', fontSize: 11, fontWeight: 700, display: 'flex', gap: 8 }}>
-                    <span>⭐ Multiplier Active: All major quotas are multiplied by 3. Current month + 2 future months.</span>
+                    <span>{lang === 'ta' ? '⭐ பெருக்கி செயலில் உள்ளது: அனைத்து முக்கிய ஒதுக்கீடுகளும் 3-ஆல் பெருக்கப்படுகின்றன. நடப்பு மாதம் + 2 எதிர்கால மாதங்கள்.' : '⭐ Multiplier Active: All major quotas are multiplied by 3. Current month + 2 future months.'}</span>
                   </div>
                 )}
               </div>
