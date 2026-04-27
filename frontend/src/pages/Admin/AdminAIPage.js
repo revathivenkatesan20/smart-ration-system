@@ -110,11 +110,11 @@ const AdminAIPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Wait for layout to settle
+    // Wait for layout to settle - reduced delay for faster rendering
     const timer = setTimeout(() => {
        setCanRenderCharts(true);
        setRenderKey(prev => prev + 1);
-    }, 600);
+    }, 100);
     return () => clearTimeout(timer);
   }, []);
 

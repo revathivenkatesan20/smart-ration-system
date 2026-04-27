@@ -12,41 +12,41 @@ import Toast from './components/Toast';
 import SmsNotification from './components/Common/SmsNotification';
 
 // Auth / Register
-import LoginPage from './pages/Login/LoginPage';
-import RegisterPage from './pages/Login/RegisterPage';
+const LoginPage = React.lazy(() => import('./pages/Login/LoginPage'));
+const RegisterPage = React.lazy(() => import('./pages/Login/RegisterPage'));
 
 // Admin
-import AdminDashboard from './pages/Admin/AdminDashboard';
-import AdminStockPage from './pages/Admin/AdminStockPage';
-import AdminShopsPage from './pages/Admin/AdminShopsPage';
-import AdminUsersPage from './pages/Admin/AdminUsersPage';
-import AdminTokensPage from './pages/Admin/AdminTokensPage';
-import AdminReportsPage from './pages/Admin/AdminReportsPage';
-import AdminChangeRequestsPage from './pages/Admin/AdminChangeRequestsPage';
-import AdminProfilePage from './pages/Admin/AdminProfilePage';
-import AdminAIPage from './pages/Admin/AdminAIPage';
-import AdminProcurementPage from './pages/Admin/AdminProcurementPage';
-import AdminBenefitsPage from './pages/Admin/AdminBenefitsPage';
-import AdminGrievancesPage from './pages/Admin/AdminGrievancesPage';
+const AdminDashboard = React.lazy(() => import('./pages/Admin/AdminDashboard'));
+const AdminStockPage = React.lazy(() => import('./pages/Admin/AdminStockPage'));
+const AdminShopsPage = React.lazy(() => import('./pages/Admin/AdminShopsPage'));
+const AdminUsersPage = React.lazy(() => import('./pages/Admin/AdminUsersPage'));
+const AdminTokensPage = React.lazy(() => import('./pages/Admin/AdminTokensPage'));
+const AdminReportsPage = React.lazy(() => import('./pages/Admin/AdminReportsPage'));
+const AdminChangeRequestsPage = React.lazy(() => import('./pages/Admin/AdminChangeRequestsPage'));
+const AdminProfilePage = React.lazy(() => import('./pages/Admin/AdminProfilePage'));
+const AdminAIPage = React.lazy(() => import('./pages/Admin/AdminAIPage'));
+const AdminProcurementPage = React.lazy(() => import('./pages/Admin/AdminProcurementPage'));
+const AdminBenefitsPage = React.lazy(() => import('./pages/Admin/AdminBenefitsPage'));
+const AdminGrievancesPage = React.lazy(() => import('./pages/Admin/AdminGrievancesPage'));
 
 // Shop Admin
-import ShopAdminDashboard from './pages/ShopAdmin/ShopAdminDashboard';
-import ShopAdminUsers from './pages/ShopAdmin/ShopAdminUsers';
-import ShopAdminTokens from './pages/ShopAdmin/ShopAdminTokens';
-import ShopAdminStock from './pages/ShopAdmin/ShopAdminStock';
-import ShopAdminReports from './pages/ShopAdmin/ShopAdminReports';
-import ShopAdminAI from './pages/ShopAdmin/ShopAdminAI';
-import ShopAdminProfile from './pages/ShopAdmin/ShopAdminProfile';
-import ShopAdminProcurementPage from './pages/ShopAdmin/ShopAdminProcurementPage';
+const ShopAdminDashboard = React.lazy(() => import('./pages/ShopAdmin/ShopAdminDashboard'));
+const ShopAdminUsers = React.lazy(() => import('./pages/ShopAdmin/ShopAdminUsers'));
+const ShopAdminTokens = React.lazy(() => import('./pages/ShopAdmin/ShopAdminTokens'));
+const ShopAdminStock = React.lazy(() => import('./pages/ShopAdmin/ShopAdminStock'));
+const ShopAdminReports = React.lazy(() => import('./pages/ShopAdmin/ShopAdminReports'));
+const ShopAdminAI = React.lazy(() => import('./pages/ShopAdmin/ShopAdminAI'));
+const ShopAdminProfile = React.lazy(() => import('./pages/ShopAdmin/ShopAdminProfile'));
+const ShopAdminProcurementPage = React.lazy(() => import('./pages/ShopAdmin/ShopAdminProcurementPage'));
 
 // User
-import UserHome from './pages/User/UserHome';
-import MyTokensPage from './pages/User/MyTokensPage';
-import HistoryPage from './pages/User/HistoryPage';
-import NotificationsPage from './pages/User/NotificationsPage';
-import ProfilePage from './pages/User/ProfilePage';
-import GenerateTokenPage from './pages/User/GenerateTokenPage';
-import UserHelpPage from './pages/User/UserHelpPage';
+const UserHome = React.lazy(() => import('./pages/User/UserHome'));
+const MyTokensPage = React.lazy(() => import('./pages/User/MyTokensPage'));
+const HistoryPage = React.lazy(() => import('./pages/User/HistoryPage'));
+const NotificationsPage = React.lazy(() => import('./pages/User/NotificationsPage'));
+const ProfilePage = React.lazy(() => import('./pages/User/ProfilePage'));
+const GenerateTokenPage = React.lazy(() => import('./pages/User/GenerateTokenPage'));
+const UserHelpPage = React.lazy(() => import('./pages/User/UserHelpPage'));
 
 // Sub-component for Mobile Bottom Nav
 const MobileBottomNav = ({ page, setPage, t, onLogout }) => {
@@ -123,21 +123,17 @@ const AppContent = () => {
     window.globalToast = (title, msg, type) => addToast(title, msg, type);
     window.triggerSms = (msg) => triggerSms(msg);
     
-    // Mappls/OSM Script Loader
-    const interval = setInterval(() => {
-      if (window.mappls) {
-        setMapplsLoaded(true);
-        clearInterval(interval);
-      } else if (!document.getElementById('mappls-sdk-dynamic')) {
-        const script = document.createElement('script');
-        script.id = 'mappls-sdk-dynamic';
-        script.src = `https://apis.mappls.com/advancedmaps/api/2f66e012e8736a137887ac5492d5beba/map_sdk?v=3.0`;
-        script.async = true;
-        document.head.appendChild(script);
-      }
-    }, 1500);
-
-    return () => clearInterval(interval);
+    // Optimized Mappls Loader - avoid polling interval
+    if (window.mappls) {
+      setMapplsLoaded(true);
+    } else if (!document.getElementById('mappls-sdk-dynamic')) {
+      const script = document.createElement('script');
+      script.id = 'mappls-sdk-dynamic';
+      script.src = `https://apis.mappls.com/advancedmaps/api/2f66e012e8736a137887ac5492d5beba/map_sdk?v=3.0`;
+      script.async = true;
+      script.onload = () => setMapplsLoaded(true);
+      document.head.appendChild(script);
+    }
   }, [addToast, triggerSms, setMapplsLoaded]);
 
   // --- FIREBASE FCM LISTENERS (safety fallback — primary registration in AppContext) ---
@@ -235,44 +231,50 @@ const AppContent = () => {
         />
       )}
 
-      {(!authData && page !== 'register') ? (
-         <LoginPage setPage={setPage} />
-      ) : (page === 'register') ? (
-         <RegisterPage onBack={() => setPage('login')} onSuccess={(data) => login(data)} />
-      ) : (
-        <div className="app-shell" onClick={(e) => {
-          if (window.innerWidth <= 768) {
-            const sidebar = document.querySelector('.sidebar');
-            if (sidebar?.classList.contains('open') && !sidebar.contains(e.target) && !e.target.classList.contains('hamburger-btn')) {
-              sidebar.classList.remove('open');
-            }
-          }
-        }}>
-          <Sidebar activePage={page} isAdmin={authData?.role==='ADMIN' || authData?.role==='SUPER_ADMIN'} role={authData?.role}/>
-          <div className="main-content">
-            <Topbar 
-              title={pageTitles[page]||'Smart Ration System'} 
-              unreadCount={notifs.filter(n => !n.read).length} 
-              onNotifClick={() => setDrawerVisible(true)}
-              onProfileClick={() => setPage(authData.role==='ADMIN' || authData.role==='SUPER_ADMIN' ? 'admin-profile' : authData.role==='SHOP_ADMIN' ? 'shop-profile' : 'profile')}
-              onMenuClick={() => {
-                const sidebar = document.querySelector('.sidebar');
-                sidebar?.classList.toggle('open');
-              }}
-            />
-            {renderDashboard()}
-          </div>
-          <NotificationDrawer 
-            visible={drawerVisible} 
-            onClose={() => setDrawerVisible(false)} 
-            notifs={notifs} 
-            onMarkRead={markNotifRead}
-          />
-          {authData?.role === 'USER' && (
-            <MobileBottomNav page={page} setPage={setPage} t={t} onLogout={logout} />
-          )}
+      <React.Suspense fallback={
+        <div style={{ height: '100vh', width: '100vw', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc' }}>
+          <div className="spinner"></div>
         </div>
-      )}
+      }>
+        {(!authData && page !== 'register') ? (
+           <LoginPage setPage={setPage} />
+        ) : (page === 'register') ? (
+           <RegisterPage onBack={() => setPage('login')} onSuccess={(data) => login(data)} />
+        ) : (
+          <div className="app-shell" onClick={(e) => {
+            if (window.innerWidth <= 768) {
+              const sidebar = document.querySelector('.sidebar');
+              if (sidebar?.classList.contains('open') && !sidebar.contains(e.target) && !e.target.classList.contains('hamburger-btn')) {
+                sidebar.classList.remove('open');
+              }
+            }
+          }}>
+            <Sidebar activePage={page} isAdmin={authData?.role==='ADMIN' || authData?.role==='SUPER_ADMIN'} role={authData?.role}/>
+            <div className="main-content">
+              <Topbar 
+                title={pageTitles[page]||'Smart Ration System'} 
+                unreadCount={notifs.filter(n => !n.read).length} 
+                onNotifClick={() => setDrawerVisible(true)}
+                onProfileClick={() => setPage(authData.role==='ADMIN' || authData.role==='SUPER_ADMIN' ? 'admin-profile' : authData.role==='SHOP_ADMIN' ? 'shop-profile' : 'profile')}
+                onMenuClick={() => {
+                  const sidebar = document.querySelector('.sidebar');
+                  sidebar?.classList.toggle('open');
+                }}
+              />
+              {renderDashboard()}
+            </div>
+            <NotificationDrawer 
+              visible={drawerVisible} 
+              onClose={() => setDrawerVisible(false)} 
+              notifs={notifs} 
+              onMarkRead={markNotifRead}
+            />
+            {authData?.role === 'USER' && (
+              <MobileBottomNav page={page} setPage={setPage} t={t} onLogout={logout} />
+            )}
+          </div>
+        )}
+      </React.Suspense>
     </>
   );
 };
