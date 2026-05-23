@@ -79,6 +79,22 @@ const UserHome = () => {
     });
   }, []);
 
+  const getPopupContent = (s) => {
+    const isAssigned = s.id === (profile?.shopId || user?.shopId);
+    const btnText = lang === 'ta' ? 'இந்த கடைக்கு மாறவும்' : 'Switch to this Shop';
+    const activeText = lang === 'ta' ? 'தற்போது செயலில் உள்ள கடை' : 'Active Shop';
+    
+    const buttonHtml = isAssigned 
+      ? `<div style="margin-top:8px; padding:6px 12px; font-size:11px; font-weight:800; color:var(--green-dark); background:var(--green-light); border-radius:6px; text-align:center;">✅ ${activeText}</div>`
+      : `<button class="btn btn-primary btn-sm" style="margin-top:8px; width:100%; padding:6px 12px; font-size:11px; border-radius:6px; font-weight:800; cursor:pointer;" onclick="window.handlePopupSwitchShop(${s.id})">📍 ${btnText}</button>`;
+      
+    return `<div style="font-family: 'Outfit', sans-serif; min-width:180px; padding:4px;">
+      <b style="font-size:13px; color:var(--gray-800); display:block; margin-bottom:4px;">🏪 ${s.name}</b>
+      <div style="font-size:11px; color:var(--gray-500);">${s.district}</div>
+      ${buttonHtml}
+    </div>`;
+  };
+
   useEffect(() => {
     if (showMapModal) {
       setTimeout(() => {
@@ -104,7 +120,7 @@ const UserHome = () => {
                });
                
                const m = window.L.marker([s.latitude, s.longitude], { icon: customIcon }).addTo(map)
-                 .bindPopup(`<b>🏪 ${s.name}</b><br/>${s.district}`);
+                 .bindPopup(getPopupContent(s));
                
                m.on('click', () => {
                  setSelectedShop(s);
@@ -126,7 +142,7 @@ const UserHome = () => {
                  html: `<div class="shop-marker-icon ${isAssigned ? 'assigned' : ''}">🏪</div>`,
                  width: 32,
                  height: 32,
-                 popupHtml: `<b>🏪 ${s.name}</b><br/>${s.district}`,
+                 popupHtml: getPopupContent(s),
                  popupOptions: { openPopup: isAssigned }
                });
 
@@ -149,6 +165,18 @@ const UserHome = () => {
   }, [showMapModal, profile, allShops]);
 
   const [showSwitchModal, setShowSwitchModal] = useState(null);
+
+  useEffect(() => {
+    window.handlePopupSwitchShop = (shopId) => {
+      const shop = allShops.find(s => s.id === Number(shopId));
+      if (shop) {
+        setShowSwitchModal(shop);
+      }
+    };
+    return () => {
+      delete window.handlePopupSwitchShop;
+    };
+  }, [allShops]);
 
   const handleSwitchShop = async () => {
     const shopId = showSwitchModal?.id;
