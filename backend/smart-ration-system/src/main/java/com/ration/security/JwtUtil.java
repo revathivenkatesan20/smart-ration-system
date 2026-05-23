@@ -8,6 +8,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class JwtUtil {
@@ -35,19 +36,15 @@ public class JwtUtil {
                 .compact();
     }
 
-    private String lastToken;
-    private Claims lastClaims;
+    private final Map<String, Claims> tokenCache = new ConcurrentHashMap<>();
 
-    public synchronized Claims parseToken(String token) {
-        if (token != null && token.equals(lastToken)) {
-            return lastClaims;
-        }
-        Claims claims = Jwts.parserBuilder()
+    public Claims parseToken(String token) {
+        if (token == null) return null;
+        return tokenCache.computeIfAbsent(token, t -> 
+            Jwts.parserBuilder()
                 .setSigningKey(getKey()).build()
-                .parseClaimsJws(token).getBody();
-        lastToken = token;
-        lastClaims = claims;
-        return claims;
+                .parseClaimsJws(t).getBody()
+        );
     }
 
     public String extractSubject(String token) {

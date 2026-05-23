@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useMemo, useCallback } from 'react';
 import { clearCache } from '../utils/apiCache';
 
 const AppCtx = createContext(null);
@@ -48,11 +48,13 @@ export const AppProvider = ({ children }) => {
     setNotifs(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
   };
 
-  const toggleLang = () => {
-    const newLang = lang === 'en' ? 'ta' : 'en';
-    setLang(newLang);
-    localStorage.setItem('lang', newLang);
-  };
+  const toggleLang = useCallback(() => {
+    setLang((prev) => {
+      const newLang = prev === 'en' ? 'ta' : 'en';
+      localStorage.setItem('lang', newLang);
+      return newLang;
+    });
+  }, []);
 
   // Register FCM token with backend and start foreground listener
   const registerFcmToken = async (rationCardNumber) => {
@@ -78,7 +80,7 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  const login = (data) => {
+  const login = useCallback((data) => {
     if (data.token) {
       // Use sessionStorage for tokens to prevent multi-tab conflicts
       sessionStorage.setItem('token', data.token);
@@ -92,9 +94,9 @@ export const AppProvider = ({ children }) => {
       const card = data.rationCard || data.rationCardNumber || '';
       if (card) registerFcmToken(card);
     }
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setAuthData(null);
     // sessionStorage.clear() only affects current tab
     sessionStorage.removeItem('token');
@@ -102,9 +104,9 @@ export const AppProvider = ({ children }) => {
     sessionStorage.removeItem('rationCardNumber');
     sessionStorage.removeItem('userName');
     clearCache(); // Wipe API cache so next user starts fresh
-  };
+  }, []);
 
-  const value = {
+  const value = useMemo(() => ({
     lang, toggleLang,
     authData, user: authData,
     login, logout,
@@ -121,7 +123,11 @@ export const AppProvider = ({ children }) => {
     cachedProfile, setCachedProfile,
     cachedStock, setCachedStock,
     cachedShops, setCachedShops
-  };
+  }), [
+    lang, authData, page, notifs, toasts, smsMessages, 
+    mapplsLoaded, adminEditContext, cachedProfile, cachedStock, cachedShops,
+    login, logout, toggleLang
+  ]);
 
   return <AppCtx.Provider value={value}>{children}</AppCtx.Provider>;
 };
