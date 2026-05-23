@@ -15,38 +15,61 @@ import SmsNotification from './components/Common/SmsNotification';
 import LoginPage from './pages/Login/LoginPage';
 import RegisterPage from './pages/Login/RegisterPage';
 
+// Helper to retry component loading when a chunk fails to load (e.g. on new deployments)
+const lazyWithRetry = (componentImport) => {
+  return lazy(() =>
+    componentImport()
+      .then((module) => {
+        sessionStorage.removeItem('chunk-failed-reloaded');
+        return module;
+      })
+      .catch((error) => {
+        console.error("Error loading chunk: ", error);
+        const hasReloaded = sessionStorage.getItem('chunk-failed-reloaded');
+        if (!hasReloaded) {
+          sessionStorage.setItem('chunk-failed-reloaded', 'true');
+          window.location.reload();
+          return new Promise(() => {}); // prevent rendering errors before reload
+        } else {
+          sessionStorage.removeItem('chunk-failed-reloaded');
+          throw error;
+        }
+      })
+  );
+};
+
 // User pages — lazy loaded
-const UserHome            = lazy(() => import('./pages/User/UserHome'));
-const MyTokensPage        = lazy(() => import('./pages/User/MyTokensPage'));
-const HistoryPage         = lazy(() => import('./pages/User/HistoryPage'));
-const NotificationsPage   = lazy(() => import('./pages/User/NotificationsPage'));
-const ProfilePage         = lazy(() => import('./pages/User/ProfilePage'));
-const GenerateTokenPage   = lazy(() => import('./pages/User/GenerateTokenPage'));
-const UserHelpPage        = lazy(() => import('./pages/User/UserHelpPage'));
+const UserHome            = lazyWithRetry(() => import('./pages/User/UserHome'));
+const MyTokensPage        = lazyWithRetry(() => import('./pages/User/MyTokensPage'));
+const HistoryPage         = lazyWithRetry(() => import('./pages/User/HistoryPage'));
+const NotificationsPage   = lazyWithRetry(() => import('./pages/User/NotificationsPage'));
+const ProfilePage         = lazyWithRetry(() => import('./pages/User/ProfilePage'));
+const GenerateTokenPage   = lazyWithRetry(() => import('./pages/User/GenerateTokenPage'));
+const UserHelpPage        = lazyWithRetry(() => import('./pages/User/UserHelpPage'));
 
 // Admin pages — lazy loaded
-const AdminDashboard          = lazy(() => import('./pages/Admin/AdminDashboard'));
-const AdminStockPage          = lazy(() => import('./pages/Admin/AdminStockPage'));
-const AdminShopsPage          = lazy(() => import('./pages/Admin/AdminShopsPage'));
-const AdminUsersPage          = lazy(() => import('./pages/Admin/AdminUsersPage'));
-const AdminTokensPage         = lazy(() => import('./pages/Admin/AdminTokensPage'));
-const AdminReportsPage        = lazy(() => import('./pages/Admin/AdminReportsPage'));
-const AdminChangeRequestsPage = lazy(() => import('./pages/Admin/AdminChangeRequestsPage'));
-const AdminProfilePage        = lazy(() => import('./pages/Admin/AdminProfilePage'));
-const AdminAIPage             = lazy(() => import('./pages/Admin/AdminAIPage'));
-const AdminProcurementPage    = lazy(() => import('./pages/Admin/AdminProcurementPage'));
-const AdminBenefitsPage       = lazy(() => import('./pages/Admin/AdminBenefitsPage'));
-const AdminGrievancesPage     = lazy(() => import('./pages/Admin/AdminGrievancesPage'));
+const AdminDashboard          = lazyWithRetry(() => import('./pages/Admin/AdminDashboard'));
+const AdminStockPage          = lazyWithRetry(() => import('./pages/Admin/AdminStockPage'));
+const AdminShopsPage          = lazyWithRetry(() => import('./pages/Admin/AdminShopsPage'));
+const AdminUsersPage          = lazyWithRetry(() => import('./pages/Admin/AdminUsersPage'));
+const AdminTokensPage         = lazyWithRetry(() => import('./pages/Admin/AdminTokensPage'));
+const AdminReportsPage        = lazyWithRetry(() => import('./pages/Admin/AdminReportsPage'));
+const AdminChangeRequestsPage = lazyWithRetry(() => import('./pages/Admin/AdminChangeRequestsPage'));
+const AdminProfilePage        = lazyWithRetry(() => import('./pages/Admin/AdminProfilePage'));
+const AdminAIPage             = lazyWithRetry(() => import('./pages/Admin/AdminAIPage'));
+const AdminProcurementPage    = lazyWithRetry(() => import('./pages/Admin/AdminProcurementPage'));
+const AdminBenefitsPage       = lazyWithRetry(() => import('./pages/Admin/AdminBenefitsPage'));
+const AdminGrievancesPage     = lazyWithRetry(() => import('./pages/Admin/AdminGrievancesPage'));
 
 // Shop Admin pages — lazy loaded
-const ShopAdminDashboard         = lazy(() => import('./pages/ShopAdmin/ShopAdminDashboard'));
-const ShopAdminUsers             = lazy(() => import('./pages/ShopAdmin/ShopAdminUsers'));
-const ShopAdminTokens            = lazy(() => import('./pages/ShopAdmin/ShopAdminTokens'));
-const ShopAdminStock             = lazy(() => import('./pages/ShopAdmin/ShopAdminStock'));
-const ShopAdminReports           = lazy(() => import('./pages/ShopAdmin/ShopAdminReports'));
-const ShopAdminAI                = lazy(() => import('./pages/ShopAdmin/ShopAdminAI'));
-const ShopAdminProfile           = lazy(() => import('./pages/ShopAdmin/ShopAdminProfile'));
-const ShopAdminProcurementPage   = lazy(() => import('./pages/ShopAdmin/ShopAdminProcurementPage'));
+const ShopAdminDashboard         = lazyWithRetry(() => import('./pages/ShopAdmin/ShopAdminDashboard'));
+const ShopAdminUsers             = lazyWithRetry(() => import('./pages/ShopAdmin/ShopAdminUsers'));
+const ShopAdminTokens            = lazyWithRetry(() => import('./pages/ShopAdmin/ShopAdminTokens'));
+const ShopAdminStock             = lazyWithRetry(() => import('./pages/ShopAdmin/ShopAdminStock'));
+const ShopAdminReports           = lazyWithRetry(() => import('./pages/ShopAdmin/ShopAdminReports'));
+const ShopAdminAI                = lazyWithRetry(() => import('./pages/ShopAdmin/ShopAdminAI'));
+const ShopAdminProfile           = lazyWithRetry(() => import('./pages/ShopAdmin/ShopAdminProfile'));
+const ShopAdminProcurementPage   = lazyWithRetry(() => import('./pages/ShopAdmin/ShopAdminProcurementPage'));
 
 // Shared skeleton fallback for lazy-loaded pages
 const PageSkeleton = () => (
