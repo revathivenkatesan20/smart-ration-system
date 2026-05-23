@@ -1,52 +1,68 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import './index.css';
 import { Toaster } from 'react-hot-toast';
 import { AppProvider, useApp } from './context/AppContext';
 import { T } from './i18n/translations';
-import UserHome from './pages/User/UserHome';
-import MyTokensPage from './pages/User/MyTokensPage';
-import HistoryPage from './pages/User/HistoryPage';
-import NotificationsPage from './pages/User/NotificationsPage';
-import ProfilePage from './pages/User/ProfilePage';
-import GenerateTokenPage from './pages/User/GenerateTokenPage';
-import UserHelpPage from './pages/User/UserHelpPage';
 
-// Layout
+// Layout (kept static — needed on first render)
 import Sidebar from './components/Sidebar';
 import Topbar from './components/Topbar';
 import NotificationDrawer from './components/NotificationDrawer';
 import Toast from './components/Toast';
 import SmsNotification from './components/Common/SmsNotification';
 
-// Auth / Register
+// Auth (kept static — first thing shown to user)
 import LoginPage from './pages/Login/LoginPage';
 import RegisterPage from './pages/Login/RegisterPage';
 
-// Admin
-import AdminDashboard from './pages/Admin/AdminDashboard';
-import AdminStockPage from './pages/Admin/AdminStockPage';
-import AdminShopsPage from './pages/Admin/AdminShopsPage';
-import AdminUsersPage from './pages/Admin/AdminUsersPage';
-import AdminTokensPage from './pages/Admin/AdminTokensPage';
-import AdminReportsPage from './pages/Admin/AdminReportsPage';
-import AdminChangeRequestsPage from './pages/Admin/AdminChangeRequestsPage';
-import AdminProfilePage from './pages/Admin/AdminProfilePage';
-import AdminAIPage from './pages/Admin/AdminAIPage';
-import AdminProcurementPage from './pages/Admin/AdminProcurementPage';
-import AdminBenefitsPage from './pages/Admin/AdminBenefitsPage';
-import AdminGrievancesPage from './pages/Admin/AdminGrievancesPage';
+// User pages — lazy loaded
+const UserHome            = lazy(() => import('./pages/User/UserHome'));
+const MyTokensPage        = lazy(() => import('./pages/User/MyTokensPage'));
+const HistoryPage         = lazy(() => import('./pages/User/HistoryPage'));
+const NotificationsPage   = lazy(() => import('./pages/User/NotificationsPage'));
+const ProfilePage         = lazy(() => import('./pages/User/ProfilePage'));
+const GenerateTokenPage   = lazy(() => import('./pages/User/GenerateTokenPage'));
+const UserHelpPage        = lazy(() => import('./pages/User/UserHelpPage'));
 
-// Shop Admin
-import ShopAdminDashboard from './pages/ShopAdmin/ShopAdminDashboard';
-import ShopAdminUsers from './pages/ShopAdmin/ShopAdminUsers';
-import ShopAdminTokens from './pages/ShopAdmin/ShopAdminTokens';
-import ShopAdminStock from './pages/ShopAdmin/ShopAdminStock';
-import ShopAdminReports from './pages/ShopAdmin/ShopAdminReports';
-import ShopAdminAI from './pages/ShopAdmin/ShopAdminAI';
-import ShopAdminProfile from './pages/ShopAdmin/ShopAdminProfile';
-import ShopAdminProcurementPage from './pages/ShopAdmin/ShopAdminProcurementPage';
+// Admin pages — lazy loaded
+const AdminDashboard          = lazy(() => import('./pages/Admin/AdminDashboard'));
+const AdminStockPage          = lazy(() => import('./pages/Admin/AdminStockPage'));
+const AdminShopsPage          = lazy(() => import('./pages/Admin/AdminShopsPage'));
+const AdminUsersPage          = lazy(() => import('./pages/Admin/AdminUsersPage'));
+const AdminTokensPage         = lazy(() => import('./pages/Admin/AdminTokensPage'));
+const AdminReportsPage        = lazy(() => import('./pages/Admin/AdminReportsPage'));
+const AdminChangeRequestsPage = lazy(() => import('./pages/Admin/AdminChangeRequestsPage'));
+const AdminProfilePage        = lazy(() => import('./pages/Admin/AdminProfilePage'));
+const AdminAIPage             = lazy(() => import('./pages/Admin/AdminAIPage'));
+const AdminProcurementPage    = lazy(() => import('./pages/Admin/AdminProcurementPage'));
+const AdminBenefitsPage       = lazy(() => import('./pages/Admin/AdminBenefitsPage'));
+const AdminGrievancesPage     = lazy(() => import('./pages/Admin/AdminGrievancesPage'));
 
-// User - IMPORTED STATICALLY AT TOP
+// Shop Admin pages — lazy loaded
+const ShopAdminDashboard         = lazy(() => import('./pages/ShopAdmin/ShopAdminDashboard'));
+const ShopAdminUsers             = lazy(() => import('./pages/ShopAdmin/ShopAdminUsers'));
+const ShopAdminTokens            = lazy(() => import('./pages/ShopAdmin/ShopAdminTokens'));
+const ShopAdminStock             = lazy(() => import('./pages/ShopAdmin/ShopAdminStock'));
+const ShopAdminReports           = lazy(() => import('./pages/ShopAdmin/ShopAdminReports'));
+const ShopAdminAI                = lazy(() => import('./pages/ShopAdmin/ShopAdminAI'));
+const ShopAdminProfile           = lazy(() => import('./pages/ShopAdmin/ShopAdminProfile'));
+const ShopAdminProcurementPage   = lazy(() => import('./pages/ShopAdmin/ShopAdminProcurementPage'));
+
+// Shared skeleton fallback for lazy-loaded pages
+const PageSkeleton = () => (
+  <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+    {[1,2,3].map(i => (
+      <div key={i} style={{
+        height: i === 1 ? '48px' : '120px',
+        borderRadius: '12px',
+        background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)',
+        backgroundSize: '200% 100%',
+        animation: 'shimmer 1.4s infinite'
+      }} />
+    ))}
+    <style>{`@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }`}</style>
+  </div>
+);
 
 // Sub-component for Mobile Bottom Nav
 const MobileBottomNav = ({ page, setPage, t, onLogout }) => {
@@ -169,7 +185,8 @@ const AppContent = () => {
     'admin-benefits': t('specialBenefits'),
     'admin-procurement': t('procurementMgmt'),
     'shop-procurement': t('procurement'),
-  }), [lang]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [lang]); // lang change forces re-evaluation; 't' is derived from lang so it's safe to omit
 
   const renderDashboard = () => {
     if (!authData) return null;
@@ -256,7 +273,9 @@ const AppContent = () => {
                   sidebar?.classList.toggle('open');
                 }}
               />
-              {renderDashboard()}
+              <Suspense fallback={<PageSkeleton />}>
+                {renderDashboard()}
+              </Suspense>
             </div>
             <NotificationDrawer 
               visible={drawerVisible} 
