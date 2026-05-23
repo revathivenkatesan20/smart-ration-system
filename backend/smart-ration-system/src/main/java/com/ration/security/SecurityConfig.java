@@ -82,8 +82,18 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Use specific trusted origins instead of wildcard patterns when credentials are allowed
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:3001", "https://smart-ration.vercel.app"));
+        // Use origin patterns to cover:
+        //   - All Vercel preview & production deployments (*.vercel.app)
+        //   - Local development (localhost:3000 / 3001)
+        //   - Android Capacitor app (capacitor://localhost)
+        // NOTE: Patterns are safe here — only *.vercel.app, not full wildcard *
+        configuration.setAllowedOriginPatterns(Arrays.asList(
+            "http://localhost:3000",
+            "http://localhost:3001",
+            "http://localhost",
+            "capacitor://localhost",
+            "https://*.vercel.app"
+        ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "X-Requested-With"));
         configuration.setAllowCredentials(true);
