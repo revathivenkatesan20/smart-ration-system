@@ -1,0 +1,21 @@
+# Ignore sensitive environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.production
+.env*.local
+
+# You may also want to ignore any backup or template files that might contain hints
+.env.production.template
+.env.example
+
+# Local database or secret configs if any
+*.pem
+*.key
+secrets.json
+config.local.js
+
+# Note: Vercel also automatically respects .gitignore, 
+# so node_modules and build directories are already ignored.

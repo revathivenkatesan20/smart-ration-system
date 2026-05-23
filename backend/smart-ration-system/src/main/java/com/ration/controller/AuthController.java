@@ -29,6 +29,7 @@ public class AuthController {
 @Autowired private StockRepository stockRepository;
     @Autowired private MemberRepository memberRepository;
     @Autowired private PasswordEncoder passwordEncoder;
+    @Autowired private AdminRepository adminRepository;
 
     @PostMapping("/user/send-otp")
     public ResponseEntity<?> sendOtp(
@@ -102,6 +103,124 @@ public class AuthController {
             return ResponseEntity.ok(Map.of(
                 "success", false,
                 "message", "Verification failed. Please check your Ration Card number and try again."
+            ));
+        }
+    }
+
+    @PostMapping("/demo-login")
+    public ResponseEntity<?> demoLogin(@RequestBody Map<String, String> req) {
+        String role = req.getOrDefault("role", "USER").toUpperCase();
+        try {
+            if ("ADMIN".equals(role)) {
+                // Find or create admin
+                Admin admin = adminRepository.findByUsername("superadmin")
+                    .orElseGet(() -> {
+                        Admin newAdmin = new Admin();
+                        newAdmin.setUsername("superadmin");
+                        newAdmin.setPasswordHash(passwordEncoder.encode("admin@123"));
+                        newAdmin.setName("Super Admin");
+                        newAdmin.setEmail("admin@rationdept.gov.in");
+                        newAdmin.setRole(Admin.AdminRole.SuperAdmin);
+                        newAdmin.setIsActive(true);
+                        newAdmin.setCreatedAt(LocalDateTime.now());
+                        return adminRepository.save(newAdmin);
+                    });
+                
+                String token = jwtUtil.generateToken(admin.getUsername(), "ADMIN", admin.getId());
+                return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "data", Map.of(
+                        "token", token,
+                        "role", "ADMIN",
+                        "name", admin.getName(),
+                        "id", admin.getId()
+                    )
+                ));
+            } else if ("SHOP_ADMIN".equals(role) || "STAFF".equals(role) || "MANAGER".equals(role)) {
+                // Find or create shop
+                Shop shop = shopRepository.findById(1L)
+                    .orElseGet(() -> {
+                        List<Shop> all = shopRepository.findAll();
+                        if (!all.isEmpty()) {
+                            return all.get(0);
+                        }
+                        Shop newShop = new Shop();
+                        newShop.setShopCode("SHOP001");
+                        newShop.setName("Madurai Central Ration Shop");
+                        newShop.setAddress("14, Anna Nagar Main Road, Madurai");
+                        newShop.setPincode("625020");
+                        newShop.setDistrict("Madurai");
+                        newShop.setLatitude(9.9252);
+                        newShop.setLongitude(78.1198);
+                        newShop.setContactNumber("9876543210");
+                        newShop.setManagerName("Rajan Kumar");
+                        newShop.setAdminPassword(passwordEncoder.encode("shop123"));
+                        return shopRepository.save(newShop);
+                    });
+                
+                String username = "shop_admin_" + shop.getId();
+                String token = jwtUtil.generateToken(username, "SHOP_ADMIN", shop.getId());
+                String shopName = shop.getName() != null ? shop.getName() : "Shop " + shop.getId();
+                
+                return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "data", Map.of(
+                        "token", token,
+                        "role", "SHOP_ADMIN",
+                        "shopId", shop.getId(),
+                        "shopName", shopName,
+                        "name", shopName + " Admin"
+                    )
+                ));
+            } else {
+                // User login
+                // Search for default card '987654321234'
+                User user = userRepository.findByRationCardNumber("987654321234")
+                    .orElseGet(() -> {
+                        List<User> all = userRepository.findAll();
+                        if (!all.isEmpty()) {
+                            return all.get(0);
+                        }
+                        User newUser = new User();
+                        newUser.setRationCardNumber("987654321234");
+                        newUser.setMobileNumber("9876543210");
+                        newUser.setHeadOfFamily("Test User");
+                        newUser.setAddress("12, Main Street, Madurai");
+                        newUser.setPincode("625020");
+                        newUser.setDistrict("Madurai");
+                        newUser.setCardType("PHH");
+                        newUser.setTotalMembers(4);
+                        newUser.setGasCylinders(1);
+                        newUser.setIsUrban(false);
+                        newUser.setCreatedAt(LocalDateTime.now());
+                        
+                        Shop shop = shopRepository.findById(1L)
+                            .orElseGet(() -> {
+                                List<Shop> shops = shopRepository.findAll();
+                                return shops.isEmpty() ? null : shops.get(0);
+                            });
+                        newUser.setAssignedShop(shop);
+                        newUser.setGovtShop(shop);
+                        
+                        return userRepository.save(newUser);
+                    });
+                
+                String token = jwtUtil.generateToken(user.getRationCardNumber(), "USER", user.getId());
+                return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "data", Map.of(
+                        "token", token,
+                        "role", "USER",
+                        "rationCardNumber", user.getRationCardNumber(),
+                        "name", user.getHeadOfFamily() != null ? user.getHeadOfFamily() : "User",
+                        "id", user.getId()
+                    )
+                ));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.ok(Map.of(
+                "success", false,
+                "message", "Demo login failed: " + e.getMessage()
             ));
         }
     }

@@ -35,6 +35,21 @@ public class JwtUtil {
                 .compact();
     }
 
+    private String lastToken;
+    private Claims lastClaims;
+
+    public synchronized Claims parseToken(String token) {
+        if (token != null && token.equals(lastToken)) {
+            return lastClaims;
+        }
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getKey()).build()
+                .parseClaimsJws(token).getBody();
+        lastToken = token;
+        lastClaims = claims;
+        return claims;
+    }
+
     public String extractSubject(String token) {
         return parseClaims(token).getSubject();
     }
@@ -57,8 +72,6 @@ public class JwtUtil {
     }
 
     private Claims parseClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getKey()).build()
-                .parseClaimsJws(token).getBody();
+        return parseToken(token);
     }
 }

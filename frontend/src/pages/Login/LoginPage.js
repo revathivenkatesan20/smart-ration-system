@@ -5,6 +5,22 @@ import { API_BASE_URL } from '../../utils/constants';
 import RegisterPage from './RegisterPage';
 import { cachedFetch } from '../../utils/apiCache';
 
+const SpinnerSm = () => (
+  <span style={{
+    display: 'inline-block',
+    borderWidth: '2px',
+    borderRadius: '50%',
+    width: '14px',
+    height: '14px',
+    borderStyle: 'solid',
+    borderColor: 'currentColor',
+    borderTopColor: 'transparent',
+    animation: 'spin 0.6s linear infinite',
+    marginRight: '8px',
+    verticalAlign: 'middle'
+  }} />
+);
+
 const LoginPage = () => {
   const { login, lang, toggleLang, triggerSms } = useApp();
   const t = (k) => T[lang][k]||k;
@@ -111,6 +127,28 @@ const LoginPage = () => {
       }
     } catch(err) { window.globalToast?.('Error', 'Connection error.', 'error'); }
     finally { setLoading(false); }
+  };
+
+  const handleDemoLogin = async (role) => {
+    setLoading(true);
+    try {
+      const res = await cachedFetch(`${API_BASE_URL}/api/auth/demo-login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role })
+      });
+      const data = await res.json();
+      if (data.success && data.data) {
+        login(data.data);
+        window.globalToast?.('Demo Login Success', `Logged in as Demo ${role}`, 'success');
+      } else {
+        window.globalToast?.('Demo Login Error', data.message || 'Verification failed.', 'error');
+      }
+    } catch(err) {
+      window.globalToast?.('Error', 'Connection error during demo login.', 'error');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleAdminLogin = async () => {
@@ -281,7 +319,7 @@ const LoginPage = () => {
                 </div>
                 <button className="btn btn-primary btn-full mt-2"
                   onClick={handleSendOtp} disabled={loading || cooldown > 0}>
-                  {loading ? '⏳ Processing...' : (cooldown > 0 ? `Please wait ${cooldown}s` : t('sendOtp'))}
+                  {loading ? <><SpinnerSm />Processing...</> : (cooldown > 0 ? `Please wait ${cooldown}s` : t('sendOtp'))}
                 </button>
                 <div style={{textAlign:'center',marginTop:20}}>
                    <span style={{fontSize:13,color:'var(--gray-500)'}}>Don't have an account? </span>
@@ -305,7 +343,7 @@ const LoginPage = () => {
                 </div>
                 <button className="btn btn-primary btn-full mt-2"
                   onClick={handleVerifyOtp} disabled={loading}>
-                  {loading?'⏳ Processing...':t('verifyOtp')}
+                  {loading ? <><SpinnerSm />Processing...</> : t('verifyOtp')}
                 </button>
                 <button className="btn btn-secondary btn-full mt-2"
                   onClick={()=>setStep(1)}>← {t('back')}</button>
@@ -328,7 +366,7 @@ const LoginPage = () => {
             </div>
             <button className="btn btn-primary btn-full mt-2"
               onClick={handleAdminLogin} disabled={loading}>
-              {loading?'⏳ Logging in...':t('adminLogin')}
+              {loading ? <><SpinnerSm />Logging in...</> : t('adminLogin')}
             </button>
           </div>
         )}
@@ -358,7 +396,7 @@ const LoginPage = () => {
                 </div>
                 <button className="btn btn-primary btn-full mt-2"
                   onClick={handleShopAdminLogin} disabled={loading}>
-                  {loading?'⏳ Logging in...':'Shop Admin Login'}
+                  {loading ? <><SpinnerSm />Logging in...</> : 'Shop Admin Login'}
                 </button>
               </>
             )}
@@ -405,6 +443,138 @@ const LoginPage = () => {
             )}
           </div>
         )}
+
+        {/* Quick Demo Access Section */}
+        <div className="demo-login-section" style={{
+          marginTop: '24px',
+          paddingTop: '20px',
+          borderTop: '1px dashed var(--gray-200)',
+          textAlign: 'center'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px',
+            color: 'var(--green)',
+            fontWeight: '800',
+            fontSize: '14px',
+            marginBottom: '4px'
+          }}>
+            <span>⚡</span> Quick Demo Login
+          </div>
+          
+          <p style={{
+            fontSize: '11px',
+            color: 'var(--gray-500)',
+            margin: '0 0 12px 0',
+            fontWeight: '600'
+          }}>
+            For Project Evaluation/Demo Purpose Only
+          </p>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '8px'
+          }}>
+            <button
+              onClick={() => handleDemoLogin('USER')}
+              disabled={loading}
+              className="btn"
+              style={{
+                padding: '8px 4px',
+                fontSize: '11px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '4px',
+                borderRadius: '8px',
+                background: '#f0fdf4',
+                border: '1px solid #bbf7d0',
+                color: '#166534',
+                fontWeight: '700',
+                transition: 'all 0.2s',
+                cursor: 'pointer'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#dcfce7';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#f0fdf4';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              <span style={{ fontSize: '16px' }}>👤</span>
+              User
+            </button>
+
+            <button
+              onClick={() => handleDemoLogin('SHOP_ADMIN')}
+              disabled={loading}
+              className="btn"
+              style={{
+                padding: '8px 4px',
+                fontSize: '11px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '4px',
+                borderRadius: '8px',
+                background: '#eff6ff',
+                border: '1px solid #bfdbfe',
+                color: '#1e40af',
+                fontWeight: '700',
+                transition: 'all 0.2s',
+                cursor: 'pointer'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#dbeafe';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#eff6ff';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              <span style={{ fontSize: '16px' }}>🏪</span>
+              Shop Admin
+            </button>
+
+            <button
+              onClick={() => handleDemoLogin('ADMIN')}
+              disabled={loading}
+              className="btn"
+              style={{
+                padding: '8px 4px',
+                fontSize: '11px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '4px',
+                borderRadius: '8px',
+                background: '#fff7ed',
+                border: '1px solid #fed7aa',
+                color: '#9a3412',
+                fontWeight: '700',
+                transition: 'all 0.2s',
+                cursor: 'pointer'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#ffedd5';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#fff7ed';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              <span style={{ fontSize: '16px' }}>🛡️</span>
+              Admin
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
