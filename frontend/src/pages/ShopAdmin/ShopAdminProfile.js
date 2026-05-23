@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
+import { useUI } from '../../context/UIContext';
 import { API_BASE_URL } from '../../utils/constants';
 import { T } from '../../i18n/translations';
 import { cachedFetch } from '../../utils/apiCache';
 
 const ShopAdminProfile = () => {
-  const { addToast, lang } = useApp();
+  const { lang } = useAuth();
+  const { addToast } = useUI();
   const t = (k) => T[lang]?.[k] || k;
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(false);

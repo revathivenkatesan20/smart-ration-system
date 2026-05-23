@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import PortalModal from '../../components/Common/PortalModal';
 import { API_BASE_URL } from '../../utils/constants';
-import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
+import { useUI } from '../../context/UIContext';
 import { T } from '../../i18n/translations';
 import { cachedFetch } from '../../utils/apiCache';
 
 const AdminUsersPage = () => {
-  const { lang, adminEditContext } = useApp();
+  const { lang } = useAuth();
+  const { adminEditContext } = useUI();
   const t = (k) => T[lang][k]||k;
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,7 +16,7 @@ const AdminUsersPage = () => {
   const [viewModal, setViewModal] = useState(null);
   const [editUser, setEditUser] = useState(null);
   const [editContext, setEditContext] = useState(null);
-  const { setAdminEditContext } = useApp(); // Access setter to clear context
+  const { setAdminEditContext } = useUI(); // Access setter to clear context
 
   useEffect(() => {
     cachedFetch(`${API_BASE_URL}/api/admin/users`, {

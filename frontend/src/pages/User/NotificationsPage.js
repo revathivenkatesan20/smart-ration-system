@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
 import { T } from '../../i18n/translations';
 import { API_BASE_URL, MOCK } from '../../utils/constants';
 import { cachedFetch } from '../../utils/apiCache';
 
 const NotificationsPage = () => {
-  const { lang } = useApp();
+  const { lang } = useAuth();
   const t = (k) => T[lang][k]||k;
   const [notifs, setNotifs] = useState([]);
 

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
 import { T } from '../../i18n/translations';
 import { API_BASE_URL } from '../../utils/constants';
 import { tokenStatusTag } from '../../utils/logic';
 import { cachedFetch } from '../../utils/apiCache';
 
 const HistoryPage = () => {
-  const { lang } = useApp();
+  const { lang } = useAuth();
   const t = (k) => T[lang][k]||k;
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);

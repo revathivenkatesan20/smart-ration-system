@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
 import { API_BASE_URL } from '../../utils/constants';
 import { T } from '../../i18n/translations';
 import { cachedFetch } from '../../utils/apiCache';
@@ -50,7 +50,7 @@ const MiniItemSelect = ({ value, onChange, items, lang, placeholder }) => {
 };
 
 const ShopAdminProcurementPage = () => {
-  const { lang } = useApp();
+  const { lang } = useAuth();
   const t = (k) => T[lang]?.[k] || k;
   const [stock, setStock] = useState([]);
   const [history, setHistory] = useState([]);

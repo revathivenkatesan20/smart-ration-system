@@ -1,9 +1,11 @@
 import React from 'react';
-import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
+import { useUI } from '../context/UIContext';
 import { T } from '../i18n/translations';
 
 const Sidebar = ({ activePage, isAdmin, role }) => {
-  const { logout, lang, toggleLang, setPage } = useApp();
+  const { logout, lang, toggleLang } = useAuth();
+  const { setPage } = useUI();
   const t = (k) => T[lang][k]||k;
   
   const userNav = [

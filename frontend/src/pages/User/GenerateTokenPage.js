@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
+import { useUI } from '../../context/UIContext';
 import { T } from '../../i18n/translations';
 import { API_BASE_URL } from '../../utils/constants';
 import { memberIcon } from '../../utils/logic';
@@ -142,7 +143,8 @@ const ItemCard = ({ item, quantity, onUpdate, uiRemaining, backendRemaining, max
 };
 
 const GenerateTokenPage = () => {
-  const { lang, setPage, user, addToast } = useApp();
+  const { lang, user } = useAuth();
+  const { setPage, addToast } = useUI();
   const t = (k) => T[lang][k]||k;
 
   const [step, setStep] = useState(1);

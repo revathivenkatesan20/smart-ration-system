@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
+import { useUI } from '../../context/UIContext';
 import { T } from '../../i18n/translations';
 import { API_BASE_URL } from '../../utils/constants';
 import { tokenStatusTag } from '../../utils/logic';
 import { cachedFetch } from '../../utils/apiCache';
 
 const MyTokensPage = ({ newToken }) => {
-  const { lang, setPage } = useApp();
+  const { lang } = useAuth();
+  const { setPage } = useUI();
   const t = (k) => T[lang][k]||k;
   const [tokens, setTokens] = useState([]);
   const [qrToken, setQrToken] = useState(null);

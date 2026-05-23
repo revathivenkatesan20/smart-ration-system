@@ -1,8 +1,8 @@
 import React from 'react';
-import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
 
 const AdminProfilePage = () => {
-  const { user } = useApp();
+  const { user } = useAuth();
   return (
     <div className="page animate-slide-up">
       <div className="page-header"><h1>👤 Admin Profile</h1></div>

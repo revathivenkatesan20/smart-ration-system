@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import PortalModal from '../../components/Common/PortalModal';
-import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
 import { T } from '../../i18n/translations';
 import { API_BASE_URL } from '../../utils/constants';
 import { statusBadge } from '../../utils/logic';
 import { cachedFetch } from '../../utils/apiCache';
 
 const AdminStockPage = () => {
-  const { lang } = useApp();
+  const { lang } = useAuth();
   const t = (k) => T[lang][k]||k;
   const [stockData, setStockData] = useState([]);
   const [loading, setLoading] = useState(true);

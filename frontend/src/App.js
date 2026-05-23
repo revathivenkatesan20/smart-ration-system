@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import './index.css';
 import { Toaster } from 'react-hot-toast';
-import { AppProvider, useApp } from './context/AppContext';
+import { useAuth } from './context/AuthContext';
+import { useUI } from './context/UIContext';
+import { AuthProvider } from './context/AuthContext';
+import { UIProvider } from './context/UIContext';
 import { T } from './i18n/translations';
 
 // Layout (kept static — needed on first render)
@@ -142,15 +145,8 @@ const MobileBottomNav = ({ page, setPage, t, onLogout }) => {
 };
 
 const AppContent = () => {
-  const { 
-    authData, lang, login, logout,
-    toasts, addToast, 
-    smsMessages, triggerSms,
-    notifs, setNotifs, markNotifRead,
-    setMapplsLoaded,
-    page, setPage,
-    adminEditContext, setAdminEditContext
-  } = useApp();
+  const { authData, lang, login, logout } = useAuth();
+  const { toasts, addToast, smsMessages, triggerSms, notifs, setNotifs, markNotifRead, setMapplsLoaded, page, setPage, adminEditContext, setAdminEditContext } = useUI();
 
   const t = (k) => T[lang]?.[k] || k;
   
@@ -316,9 +312,9 @@ const AppContent = () => {
 };
 
 const App = () => (
-  <AppProvider>
+  <AuthProvider><UIProvider>
     <AppContent />
-  </AppProvider>
+  </UIProvider></AuthProvider>
 );
 
 export default App;

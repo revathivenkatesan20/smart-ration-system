@@ -1,8 +1,8 @@
 import React from 'react';
-import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
 
 const Topbar = ({ title, unreadCount, onNotifClick, onProfileClick, onMenuClick }) => {
-  const { user } = useApp();
+  const { user } = useAuth();
   return (
     <div className="topbar">
       <div style={{display:'flex',alignItems:'center',gap:12}}>

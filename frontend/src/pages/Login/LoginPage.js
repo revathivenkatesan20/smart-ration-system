@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
+import { useUI } from '../../context/UIContext';
 import { T } from '../../i18n/translations';
 import { API_BASE_URL } from '../../utils/constants';
 import RegisterPage from './RegisterPage';
@@ -22,7 +23,8 @@ const SpinnerSm = () => (
 );
 
 const LoginPage = () => {
-  const { login, lang, toggleLang, triggerSms } = useApp();
+  const { login, lang, toggleLang } = useAuth();
+  const { triggerSms } = useUI();
   const t = (k) => T[lang][k]||k;
   
   const [mode, setMode] = useState('user');

@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import PortalModal from '../../components/Common/PortalModal';
-import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
+import { useUI } from '../../context/UIContext';
 import { T } from '../../i18n/translations';
 import { API_BASE_URL, MOCK } from '../../utils/constants';
 import { statusBadge, safeInitMap } from '../../utils/logic';
 import { cachedFetch } from '../../utils/apiCache';
 
 const UserHome = () => {
-  const { 
-    user, lang, setPage, mapplsLoaded,
-    cachedProfile, setCachedProfile,
-    cachedStock, setCachedStock,
-    cachedShops, setCachedShops
-  } = useApp();
+  const { user, lang } = useAuth();
+  const { setPage, mapplsLoaded, cachedProfile, setCachedProfile, cachedStock, setCachedStock, cachedShops, setCachedShops } = useUI();
   const t = (k) => T[lang][k]||k;
 
   const [profile, setProfile] = useState(cachedProfile);

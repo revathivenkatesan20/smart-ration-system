@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { API_BASE_URL } from '../../utils/constants';
-import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
 import { T } from '../../i18n/translations';
 import { cachedFetch } from '../../utils/apiCache';
 
@@ -93,7 +93,7 @@ const MiniShopSelect = ({ value, onChange, shops, t }) => {
 };
 
 const AdminReportsPage = () => {
-  const { lang } = useApp();
+  const { lang } = useAuth();
   const t = (k) => T[lang][k]||k;
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');

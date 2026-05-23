@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
 import { T } from '../../i18n/translations';
 import { API_BASE_URL, MOCK } from '../../utils/constants';
 import { statusBadge } from '../../utils/logic';
@@ -10,7 +10,7 @@ import {
 } from 'recharts';
 
 const AdminDashboard = () => {
-  const { lang } = useApp();
+  const { lang } = useAuth();
   const t = (k) => T[lang][k]||k;
   const [d, setD] = useState(MOCK.adminDash);
   const [alerts, setAlerts] = useState([]);

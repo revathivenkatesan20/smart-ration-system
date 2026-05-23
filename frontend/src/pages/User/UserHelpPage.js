@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
 import { API_BASE_URL } from '../../utils/constants';
 import RequestChangeModal from '../../components/User/RequestChangeModal';
 import { cachedFetch } from '../../utils/apiCache';
@@ -36,7 +36,7 @@ const FAQ_DATA = [
 ];
 
 const UserHelpPage = () => {
-  const { lang } = useApp();
+  const { lang } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [profile, setProfile] = useState(null);
   const [history, setHistory] = useState([]);

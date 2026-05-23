@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { API_BASE_URL } from '../../utils/constants';
-import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
 import { T } from '../../i18n/translations';
 import { tokenStatusTag } from '../../utils/logic';
 import { cachedFetch } from '../../utils/apiCache';
 
 const AdminTokensPage = () => {
-  const { lang } = useApp();
+  const { lang } = useAuth();
   const t = (k) => T[lang][k]||k;
   const [tokens, setTokens] = useState([]);
   const [loading, setLoading] = useState(true);

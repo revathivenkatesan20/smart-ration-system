@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { API_BASE_URL } from '../../utils/constants';
-import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
 import { T } from '../../i18n/translations';
 import { cachedFetch } from '../../utils/apiCache';
 
 const AdminBenefitsPage = () => {
-  const { lang } = useApp();
+  const { lang } = useAuth();
   const t = (k) => T[lang][k]||k;
   const [benefits, setBenefits] = useState([]);
   const [loading, setLoading] = useState(false);

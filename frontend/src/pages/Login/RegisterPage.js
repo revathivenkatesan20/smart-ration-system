@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
+import { useUI } from '../../context/UIContext';
 import { T } from '../../i18n/translations';
 import { API_BASE_URL } from '../../utils/constants';
 import { safeInitMap } from '../../utils/logic';
@@ -98,7 +99,8 @@ const SearchableShopDropdown = ({ shops, selectedId, onSelect, lang, t }) => {
 };
 
 const RegisterPage = ({ onBack, onSuccess }) => {
-  const { lang, mapplsLoaded, triggerSms, login } = useApp();
+  const { lang, login } = useAuth();
+  const { mapplsLoaded, triggerSms } = useUI();
   const t = (k) => T[lang][k]||k;
   
   const [step, setStep] = useState(1);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
 import { T } from '../../i18n/translations';
 import { API_BASE_URL } from '../../utils/constants';
 import { cachedFetch } from '../../utils/apiCache';
@@ -98,7 +98,7 @@ const MiniShopSelect = ({ value, onChange, shops, t, disabled }) => {
 };
 
 const AdminAIPage = () => {
-  const { lang } = useApp();
+  const { lang } = useAuth();
   const t = (k) => T[lang][k]||k;
   const [activeAI, setActiveAI] = useState('demand');
   const [approved, setApproved] = useState([]);

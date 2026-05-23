@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
 import { T } from '../../i18n/translations';
 import { API_BASE_URL } from '../../utils/constants';
 import { memberIcon } from '../../utils/logic';
 import { cachedFetch } from '../../utils/apiCache';
 
 const ProfilePage = () => {
-  const { lang } = useApp();
+  const { lang } = useAuth();
   const [profile, setProfile] = useState(null);
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
